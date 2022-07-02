@@ -1,4 +1,92 @@
-.main-container{
-    background-color: rgb(0, 0, 113);
-    color: rgb(212, 212, 212);
+.container-fluid{
+    background-color: rgb(40, 40, 40);
+    height: 100%;
 }
+.logo{
+    width: 100%;
+    max-width: 200px;
+    padding: 5%;
+}
+.div-sidebar{
+    position: fixed;
+}
+#menu{
+    text-align: center;
+    width: 100%;
+}
+#divMain{
+    background-color: rgb(40, 40, 40);
+    height: 100%;
+}
+#divIntro{
+    font-family: "Lucida Console", "Courier New";
+    font-size: 10em;
+    font-weight: bold;
+    color: rgb(0, 92, 184);
+}
+#divCloseButton{
+    width: 100%;
+}
+#divPopup{
+    transition: 0.5s;
+    overflow: hidden;
+}
+#new{
+    transition: 0.5s;
+}
+
+.item {
+    flex-grow: 20;
+    transition: all 1s;
+}
+
+.collapse {
+    flex-grow: 1;
+
+}
+/* #divMain.col-sm-10{
+    margin-left: 16.67%;
+}
+#divMain.col-md-10{
+    margin-left: 16.67%;
+}
+#divMain.col-lg-10{
+    margin-left: 16.67%;
+} */
+
+
+/*  Small devices (landscape phones, 576px and up) sm*/
+@media (min-width: 576px) { 
+    #divMain{
+        margin-left: 16.67%;
+    }
+    
+}
+
+/* Medium devices (tablets, 768px and up) md*/
+@media (min-width: 768px) { 
+    #divMain{
+        margin-left: 16.67%;
+    }
+    
+ }
+
+/* Large devices (desktops, 992px and up) lg*/
+@media (min-width: 992px) { 
+    #divMain{
+        margin-left: 16.67%;
+    }
+
+ }
+
+/* X-Large devices (large desktops, 1200px and up) xl*/
+@media (min-width: 1200px) {
+    #divMain{
+        margin-left: 8.33%;
+    }
+ }
+
+/* XX-Large devices (larger desktops, 1400px and up) xxl*/
+@media (min-width: 1400px) { 
+    
+ }
