@@ -5,7 +5,7 @@
             Nikhil Patil
         </title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
         <link rel="stylesheet" href="styles.css">
         <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 
@@ -16,7 +16,28 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
         <script src="https://kit.fontawesome.com/95a8faf6e4.js" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.151.3/three.js" integrity="sha512-BwyZPvtawNInmLsREIDelsBWnyXzmR11MF6SG1VSkQ51YhMkdNFxL9sGKgRzTX7drQzCLVheb4sobHNGpwCn+w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script type="module" src="../scripts/mainscript.js"></script>
+        <script type="module" src="../scripts/script.js"></script>
+        <script>
+            const openNav = () => {
+            document.getElementById("divPopup").style.height = "100%";
+            $("#divHamBurgerButton").hide();
+
+            // $("#new")[0].style.height = "100%";
+
+            // document.getElementById("new").style.height = "100%";
+            // document.getElementById("divSide").style.visibility = "visible";
+            }
+            const closeNav = () => {
+            document.getElementById("divPopup").style.height = "0%";
+            $("#divHamBurgerButton").show();
+
+            // $("#new")[0].style.height = "0%";
+
+            // document.getElementById("new").style.height = "0%";
+            // document.getElementById("divSide").style.visibility = "collapse";
+
+            }
+        </script>
     </head>
 
     <body>
@@ -85,7 +106,7 @@
                 </div>
                 <div id="divMain" class="col-12 col-md-10 col-sm-10 col-lg-10 col-xl-11 px-sm-2 py-3">
                     <div id="divHamBurgerButton" class="">
-                        <button type="button" id="btnHamBurger" class="d-block d-sm-none btn btn-default" aria-label="Open button" onclick="openNav();">
+                        <button type="button" id="btnHamBurger" class="d-block d-sm-none btn btn-default" aria-label="Open button" onclick="openNav()">
                             <span style="font-size: 2em; color: rgb(191, 191, 191);">
                                 <i class="fa-solid fa-bars"></i>
                             </span>                                
