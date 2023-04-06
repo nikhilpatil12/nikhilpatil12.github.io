@@ -1,95 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mouse Circle in Three.js</title>
+    <meta charset="utf-8" />
+    <title>3JS Mouse Animation</title>
     <style>
       body {
         margin: 0;
-        padding: 0;
         overflow: hidden;
       }
     </style>
   </head>
-  <body>
-    <div style="height: 200px; background-color: transparent; font-size: large;">
-      lorem ipsem
-    </div>
-    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>
-    <script>
+  <body> 
+    <script src="../node_modules/three/build/Three.js"></script>
+    <script type="module">
       // Set up the scene, camera, and renderer
-      const scene = new THREE.Scene();
-      const scene2 = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
         0.1,
         1000
       );
-      const camera2 = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-      );
-      const renderer = new THREE.WebGLRenderer();
+      camera.position.z = 5;
+      var renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
-      const renderer2 = new THREE.WebGLRenderer();
-      renderer2.setSize(window.innerWidth, window.innerHeight);
-      document.body.appendChild(renderer2.domElement);
 
-      // Set up the mouse circle
-      const mouseCircleGeometry = new THREE.RingGeometry(0.010, 0.016, 32);
-      const mouseCircleMaterial = new THREE.MeshBasicMaterial({
+      // Set up the wireframe planet mesh
+      var planetGeometry = new THREE.IcosahedronGeometry(2, 4);
+      var planetMaterial = new THREE.MeshBasicMaterial({
         color: 0xffffff,
-        transparent: true,
-        opacity: 0.5,
+        wireframe: true,
       });
-      const mouseCircle = new THREE.Mesh(
-        mouseCircleGeometry,
-        mouseCircleMaterial
-      );
-      scene2.add(mouseCircle);
+      var planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
+      scene.add(planetMesh);
 
-      // Set up variables for easing
-      let targetPosition = new THREE.Vector3();
-      let currentPosition = new THREE.Vector3();
+      // Set up the glowing sphere
+      var glowGeometry = new THREE.SphereGeometry(2.1, 32, 32);
+      var glowMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          time: { type: "f", value: 0.0 },
+          resolution: { type: "v2", value: new THREE.Vector2() },
+        },
+        vertexShader: document.getElementById("glowVertexShader").textContent,
+        fragmentShader: document.getElementById("glowFragmentShader").textContent,
+        transparent: true,
+      });
+      var glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+      scene.add(glowMesh);
 
-      // Update the mouse position on mouse move using easing
-      function onMouseMove(event) {
-        console.log(event)
-        targetPosition.set(
-          (event.clientX / window.innerWidth) * 2 - 1,
-          -(event.clientY / window.innerHeight) * 2 + 1,
-          0.5
-        );
-        targetPosition.unproject(camera);
-      }
+      // Set up the mouse position
+      var mouseX = 0;
+      var mouseY = 0;
 
-      // Animate the scene
+      // Add an event listener to update the mouse position on mousemove
+      document.addEventListener("mousemove", function (event) {
+        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+      });
+
+      // Set up the animation loop
+      var clock = new THREE.Clock();
       function animate() {
+        requestAnimationFrame(animate);
+
+        // Rotate the wireframe planet mesh based on the mouse position
+        planetMesh.rotation.x = mouseY;
+        planetMesh.rotation.y = mouseX;
+
+        // Update the time uniform for the glowing sphere material
+        glowMaterial.uniforms.time.value = clock.getElapsedTime();
+
         // Render the scene
         renderer.render(scene, camera);
-        renderer2.render(scene2, camera2);
-
-        // Update the current position using easing
-        const difference = targetPosition.clone().sub(currentPosition);
-        const acceleration = difference.multiplyScalar(0.05);
-        currentPosition.add(acceleration);
-        mouseCircle.position.copy(currentPosition);
-
-        // Request the next frame of the animation loop
-        requestAnimationFrame(animate);
       }
-
-      // Set up the initial camera position and start the animation loop
-      camera.position.z = 5;
       animate();
 
-      // Add the mouse move event listener to the window
-      window.addEventListener("mousemove", onMouseMove, false);
+      // Set up the post-processing effects
+      var composer = new THREE.EffectComposer(renderer);
+      var renderPass = new THREE.RenderPass(scene, camera);
+      composer.addPass(renderPass);
+      var glitchPass = new THREE.ShaderPass(THREE.GlitchShader);
+      // Configure the glitch effect
+      glitchPass.uniforms["tDisp"].value = new THREE.TextureLoader().load(
+        "https://cdn.rawgit.com/evanw/glfx.js/master/demo/textures/DisplacementMap.png"
+      );
+      glitchPass.uniforms["amount"].value = 0;
+      glitchPass.renderToScreen = true;
+      composer.addPass(glitchPass);
+
+      // Resize the renderer and camera when the window is resized
+      window.addEventListener("resize", function () {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+      });
+    </script>
+
+    <!-- Shaders for the glowing sphere -->
+    <script id="glowVertexShader" type="x-shader/x-vertex">
+      uniform float time;
+
+      varying vec3 vNormal;
+
+      void main() {
+        vNormal = normal;
+        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * modelViewPosition;
+      }
+    </script>
+    <script id="glowFragmentShader" type="x-shader/x-fragment">
+      uniform float time;
+      uniform vec2 resolution;
+
+      varying vec3 vNormal;
+
+      void main() {
+        vec2 p = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
+        float d = length(p);
+        vec3 color = vec3(1.0, 0.3, 0.0);
+        vec3 glow = vec3(1.0, 0.8, 0.2);
+        vec3 finalColor = mix(color, glow, smoothstep(0.5, 0.4, sin(d * 10.0 + time)));
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
     </script>
   </body>
 </html>
