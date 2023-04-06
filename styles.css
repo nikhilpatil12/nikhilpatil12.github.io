@@ -1,5 +1,5 @@
 .container-fluid{
-    background-color: rgb(40, 40, 40);
+    /* background-color: rgb(40, 40, 40); */
     height: 100%;
 }
 .logo{
@@ -15,12 +15,14 @@
     width: 100%;
 }
 #divMain{
-    background-color: rgb(40, 40, 40);
+    /* background-color: rgb(40, 40, 40); */
     height: 100%;
+    position: relative;
+    z-index: 1;
 }
 #divIntro{
     font-family: "Lucida Console", "Courier New";
-    font-size: 10em;
+    font-size: 5em;
     font-weight: bold;
     color: rgb(0, 92, 184);
 }
@@ -52,6 +54,12 @@
 #divHamBurgerButton{
     width: 100%;
     position: fixed;
+}
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
 }
 /* #divMain.col-sm-10{
     margin-left: 16.67%;

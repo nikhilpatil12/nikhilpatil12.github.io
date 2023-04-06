@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mouse Circle in Three.js</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="height: 200px; background-color: transparent; font-size: large;">
+      lorem ipsem
+    </div>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>
+    <script>
+      // Set up the scene, camera, and renderer
+      const scene = new THREE.Scene();
+      const scene2 = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const camera2 = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+      const renderer2 = new THREE.WebGLRenderer();
+      renderer2.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer2.domElement);
+
+      // Set up the mouse circle
+      const mouseCircleGeometry = new THREE.RingGeometry(0.010, 0.016, 32);
+      const mouseCircleMaterial = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.5,
+      });
+      const mouseCircle = new THREE.Mesh(
+        mouseCircleGeometry,
+        mouseCircleMaterial
+      );
+      scene2.add(mouseCircle);
+
+      // Set up variables for easing
+      let targetPosition = new THREE.Vector3();
+      let currentPosition = new THREE.Vector3();
+
+      // Update the mouse position on mouse move using easing
+      function onMouseMove(event) {
+        console.log(event)
+        targetPosition.set(
+          (event.clientX / window.innerWidth) * 2 - 1,
+          -(event.clientY / window.innerHeight) * 2 + 1,
+          0.5
+        );
+        targetPosition.unproject(camera);
+      }
+
+      // Animate the scene
+      function animate() {
+        // Render the scene
+        renderer.render(scene, camera);
+        renderer2.render(scene2, camera2);
+
+        // Update the current position using easing
+        const difference = targetPosition.clone().sub(currentPosition);
+        const acceleration = difference.multiplyScalar(0.05);
+        currentPosition.add(acceleration);
+        mouseCircle.position.copy(currentPosition);
+
+        // Request the next frame of the animation loop
+        requestAnimationFrame(animate);
+      }
+
+      // Set up the initial camera position and start the animation loop
+      camera.position.z = 5;
+      animate();
+
+      // Add the mouse move event listener to the window
+      window.addEventListener("mousemove", onMouseMove, false);
+    </script>
+  </body>
+</html>
