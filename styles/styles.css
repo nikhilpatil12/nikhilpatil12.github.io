@@ -1,0 +1,269 @@
+.container-fluid {
+    /* background-color: rgb(40, 40, 40); */
+    height: 100vmin;
+}
+
+.logo {
+    width: 100%;
+    max-width: 200px;
+    padding: 5%;
+}
+
+.div-sidebar {
+    position: fixed;
+}
+
+#menu {
+    text-align: center;
+    width: 100%;
+}
+
+#divMain {
+    /* background-color: rgb(40, 40, 40); */
+    height: 100vmin;
+    position: relative;
+    z-index: 1;
+}
+
+#divIntro {
+    font-family: "Lucida Console", "Courier New";
+    font-size: 3em;
+    font-weight: bold;
+    color: rgb(0, 92, 184);
+}
+
+#divCloseButton {
+    width: 100%;
+}
+
+#divPopup {
+    transition: 0.8s;
+    overflow: hidden;
+    z-index: 2;
+}
+
+#new {
+    transition: 0.5s;
+}
+
+.item {
+    flex-grow: 20;
+    transition: all 1s;
+}
+
+.collapse {
+    flex-grow: 1;
+
+}
+
+#btnHamBurger {
+    margin-left: auto;
+    margin-right: 0;
+    padding: 0px 10vw;
+}
+
+#divHamBurgerButton {
+    width: 100%;
+    position: fixed;
+    transition: width 1s ease-in-out;
+}
+
+#socials {
+    margin-bottom: 10vh;
+}
+
+#canvasbg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+#canvasfront {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    pointer-events: none;
+}
+
+body {
+    background-color: rgb(40, 40, 40);
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="rgb(255,55,55)"/></svg>'), auto;
+
+}
+
+a {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="rgb(255,255,255)"/></svg>'), auto;
+}
+
+.section {
+    position: absolute;
+    font-family: "Lucida Console", "Courier New";
+    color: rgb(0, 92, 184);
+    margin-left: 5vw;
+    font-size: 1em;
+    height: 98%;
+    width: 80vw;
+    text-align: left;
+    transition: all 0.9s ease-in-out;
+}
+
+.section p {
+    font-size: 2em;
+}
+
+.section h2 {
+    font-size: 4em;
+    color: rgb(255, 0, 60);
+}
+
+.li-nav span {
+    transition: all 0.3s ease-in-out;
+}
+
+.li-nav.liactive {
+    color: rgb(255, 0, 60);
+    letter-spacing: 1px;
+}
+
+.li-nav span:hover {
+    color: rgb(255, 0, 60);
+    letter-spacing: 1px;
+}
+
+.section.active {
+    animation: slideFromLeft 0.5s ease-in-out;
+}
+
+.section.inactive {
+    animation: slideToLeft 0.5s ease-in-out;
+}
+
+.tech-list {
+    list-style: none;
+    padding: 0;
+}
+
+.tech {
+    font-size: 24px;
+    color: rgb(0, 92, 184);
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.tech:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    transform: translateY(-50%);
+    border-radius: 50%;
+}
+
+.card-header {
+    border-bottom: none;
+}
+
+.card-title {
+    margin-bottom: 0;
+}
+
+.card-text {
+    margin-bottom: 1rem;
+}
+
+ul li:not(:last-child) {
+    margin-bottom: 0.5rem;
+}
+
+
+@keyframes slideFromLeft {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideToLeft {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+/* #divMain.col-sm-10{
+    margin-left: 16.67%;
+}
+#divMain.col-md-10{
+    margin-left: 16.67%;
+}
+#divMain.col-lg-10{
+    margin-left: 16.67%;
+} */
+
+
+/*  Small devices (landscape phones, 576px and up) sm*/
+@media (min-width: 576px) {
+    #divMain {
+        margin-left: 16.67%;
+    }
+
+    #divIntro {
+        font-size: 5em;
+    }
+
+    #socials {
+        margin-bottom: 0vh;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) md*/
+@media (min-width: 768px) {}
+
+/* Large devices (desktops, 992px and up) lg*/
+@media (min-width: 992px) {}
+
+/* X-Large devices (large desktops, 1200px and up) xl*/
+@media (min-width: 1200px) {
+    #divMain {
+        margin-left: 8.33%;
+    }
+}
+
+/* XX-Large devices (larger desktops, 1400px and up) xxl*/
+@media (min-width: 1400px) {}
+
+.col .card .bg-primary {
+    background-color: #06c !important;
+}
+
+.col .border-primary {
+    border-color: #06c !important;
+}
+
+.col .card-body {
+    background-color: #282828 !important;
+}
+
+
+.col .card .card-body li {
+    color: #06c;
+}
+
+.card-body p {
+    font-size: 1.2em;
+}
+
+a.btn:hover {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="rgb(255,255,255)"/></svg>'), auto;
+}
