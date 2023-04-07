@@ -46,7 +46,6 @@
 
         const openNav = () => {
             document.getElementById("divPopup").style.height = "100%";
-            $("#divHamBurgerButton").hide();
             // $("#new")[0].style.height = "100%";
             // document.getElementById("new").style.height = "100%";
             // document.getElementById("divSide").style.visibility = "visible";
@@ -54,10 +53,12 @@
         const closeNav = () => {
             if (window.outerWidth < 576) {
                 document.getElementById("divPopup").style.height = "0%";
-                $("#divHamBurgerButton").show();
                 // $("#new")[0].style.height = "0%";
                 // document.getElementById("new").style.height = "0%";
                 // document.getElementById("divSide").style.visibility = "collapse";
+            }
+            else {
+                document.getElementById("divHamBurgerButton").style.display = "none";
             }
 
         }
@@ -65,6 +66,8 @@
 </head>
 
 <body>
+    <div id="canvas-container">
+    </div>
     <div class="container-fluid">
         <div class="row flex-nowrap">
             <div id="divPopup" class="div-sidebar col-md-2 col-sm-2 col-lg-2 col-xl-1 px-sm-2 px-0 bg-dark">
@@ -226,10 +229,12 @@
                                             duplicates.
                                         </p>
                                         <ul class="list-unstyled mb-0">
-                                            <li><a class="btn btn-danger btn-sm"
-                                                    href="https://github.com/nikhilpatil12/TwitterBot">GitHub</a> <a
-                                                    class="btn btn-danger btn-sm"
-                                                    href="https://twitter.com/iTechnoBot">Demo</a></li>
+                                            <li>
+                                                <a class="btn btn-danger btn-sm"
+                                                    href="https://github.com/nikhilpatil12/TwitterBot">GitHub</a>
+                                                <a class="btn btn-danger btn-sm"
+                                                    href="https://twitter.com/iTechnoBot">Demo</a>
+                                            </li>
                                             <li><small class="text-muted">Technologies: Python, Twitter API 2, SQLite,
                                                     Docker, Cron</small></li>
                                         </ul>

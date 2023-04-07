@@ -51,7 +51,7 @@ const rendererbg = new THREE.WebGLRenderer({
 });
 
 rendererbg.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(rendererbg.domElement);
+document.getElementById("canvas-container").appendChild(rendererbg.domElement);
 
 // Create the second canvas
 const canvasfront = document.createElement("canvas");
@@ -62,7 +62,9 @@ const rendererfront = new THREE.WebGLRenderer({
   alpha: true,
 });
 rendererfront.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(rendererfront.domElement);
+document
+  .getElementById("canvas-container")
+  .appendChild(rendererfront.domElement);
 
 // Set up the background mesh
 var planeGeometry = new THREE.PlaneGeometry(200, 400);
@@ -192,3 +194,16 @@ function animate() {
   rendererfront.render(scenefront, camera);
 }
 animate();
+
+const canvasContainer = document.getElementById("canvas-container");
+function resizeRenderer() {
+  const width = canvasContainer.offsetWidth;
+  const height = canvasContainer.offsetHeight;
+  rendererbg.setSize(width, height);
+  rendererfront.setSize(width, height);
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+}
+
+window.addEventListener("resize", resizeRenderer);
+resizeRenderer();
