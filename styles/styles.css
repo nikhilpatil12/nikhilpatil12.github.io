@@ -138,22 +138,28 @@ a {
     transition: all 0.3s ease-in-out;
 }
 
-.li-nav.liactive {
-    color: rgb(255, 0, 60);
-    letter-spacing: 1px;
-}
-
 .li-nav span:hover {
     color: rgb(255, 0, 60);
     letter-spacing: 1px;
 }
 
-.section.active {
-    animation: slideFromLeft 0.5s ease-in-out;
+.li-nav.liactive {
+    color: rgb(255, 0, 60);
+    letter-spacing: 1px;
 }
 
-.section.inactive {
-    animation: slideToLeft 0.5s ease-in-out;
+.nav-link a i {
+    scale: 1;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-link a i:hover {
+    color: rgb(255, 0, 60);
+    scale: 1.5;
+}
+
+.section.active {
+    animation: slideFromLeft 0.5s ease-in-out;
 }
 
 .tech-list {
@@ -204,15 +210,6 @@ a {
     }
 }
 
-@keyframes slideToLeft {
-    from {
-        transform: translateX(0);
-    }
-
-    to {
-        transform: translateX(-100%);
-    }
-}
 
 /* #divMain.col-sm-10{
     margin-left: 16.67%;
@@ -291,4 +288,9 @@ a.btn {
 
 a.btn:hover {
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="rgb(255,255,255)"/></svg>'), auto;
+}
+
+.nikhil {
+    color: #f04;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="rgb(0,82,184)"/></svg>'), auto;
 }

@@ -100,9 +100,12 @@ var planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
 
 scene.add(planetMesh);
 
-const directionallight = new THREE.DirectionalLight(0xffffff, 1);
-directionallight.position.set(10, 0, 0); // set the direction of the light
+const directionallight = new THREE.DirectionalLight(0xff0000, 100);
+directionallight.position.set(10, -10, 0); // set the direction of the light
 scene.add(directionallight);
+const directionallight2 = new THREE.DirectionalLight(0x0000ff, 100);
+directionallight2.position.set(10, 10, 0); // set the direction of the light
+scene.add(directionallight2);
 
 const ambientlight = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(ambientlight);
