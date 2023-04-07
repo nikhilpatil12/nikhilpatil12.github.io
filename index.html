@@ -1,123 +1,290 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>
-            Nikhil Patil
-        </title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
-        <link rel="stylesheet" href="styles.css">
-        <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-        
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-        <script src="https://kit.fontawesome.com/95a8faf6e4.js" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.151.3/three.js" integrity="sha512-BwyZPvtawNInmLsREIDelsBWnyXzmR11MF6SG1VSkQ51YhMkdNFxL9sGKgRzTX7drQzCLVheb4sobHNGpwCn+w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script type="module" src="../scripts/script.js"></script>
-        <script>
-            const openNav = () => {
+<head>
+    <title>
+        Nikhil Patil
+    </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+
+    <link rel="stylesheet" href="./styles/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="https://kit.fontawesome.com/95a8faf6e4.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.151.3/three.js"
+        integrity="sha512-BwyZPvtawNInmLsREIDelsBWnyXzmR11MF6SG1VSkQ51YhMkdNFxL9sGKgRzTX7drQzCLVheb4sobHNGpwCn+w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="module" src="./scripts/script.js"></script>
+    <script>
+        function showContent(contentId) {
+            var sections = document.querySelectorAll(".section");
+            for (var i = 0; i < sections.length; i++) {
+                sections[i].classList.add("inactive");
+                sections[i].classList.remove("active");
+                sections[i].classList.add("d-none");
+            }
+            var lisections = document.querySelectorAll(".li-nav");
+            for (var i = 0; i < lisections.length; i++) {
+                lisections[i].classList.remove("liactive");
+            }
+            var section = document.querySelector("#" + contentId);
+            if (section) {
+                section.classList.remove("d-none");
+                section.classList.remove("inactive");
+                section.classList.add("active");
+            }
+            var lisection = document.querySelector("#li-" + contentId);
+            if (lisection) {
+                lisection.classList.add("liactive");
+            }
+            closeNav()
+        }
+
+
+        const openNav = () => {
             document.getElementById("divPopup").style.height = "100%";
             $("#divHamBurgerButton").hide();
-
             // $("#new")[0].style.height = "100%";
-
             // document.getElementById("new").style.height = "100%";
             // document.getElementById("divSide").style.visibility = "visible";
+        }
+        const closeNav = () => {
+            if (window.outerWidth < 576) {
+                document.getElementById("divPopup").style.height = "0%";
+                $("#divHamBurgerButton").show();
+                // $("#new")[0].style.height = "0%";
+                // document.getElementById("new").style.height = "0%";
+                // document.getElementById("divSide").style.visibility = "collapse";
             }
-            const closeNav = () => {
-            document.getElementById("divPopup").style.height = "0%";
-            $("#divHamBurgerButton").show();
 
-            // $("#new")[0].style.height = "0%";
+        }
+    </script>
+</head>
 
-            // document.getElementById("new").style.height = "0%";
-            // document.getElementById("divSide").style.visibility = "collapse";
-
-            }
-        </script>
-    </head>
-
-    <body>
-        <div class="container-fluid">
-            <div class="row flex-nowrap">
-                <div id="divPopup"  class="div-sidebar col-md-2 col-sm-2 col-lg-2 col-xl-1 px-sm-2 px-0 bg-dark">
-                    <div id="divSide" class="d-flex flex-column align-items-center px-3 pt-2 text-white min-vh-100">
-                        <div id="divCloseButton" class="d-flex justify-content-end">
-                            <button type="button" class="d-block d-sm-none btn btn-default" aria-label="Close button" onclick="closeNav();">
-                                <span style="font-size: 2em; color: rgb(191, 191, 191);">
-                                    <i class="fas fa-close"></i>
-                                </span>                                
-                            </button>
-                        </div>
-                        <!--Icon-->
-                        <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                            <span class="fs-5  ">
-                                <img src="images/favicon.ico" alt="Nik Logo" class="logo"/>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <div id="divPopup" class="div-sidebar col-md-2 col-sm-2 col-lg-2 col-xl-1 px-sm-2 px-0 bg-dark">
+                <div id="divSide" class="d-flex flex-column align-items-center px-3 pt-2 text-white min-vh-100">
+                    <div id="divCloseButton" class="d-flex justify-content-end">
+                        <button type="button" class="d-block d-sm-none btn btn-default" aria-label="Close button"
+                            onclick="closeNav();">
+                            <span style="font-size: 2em; color: rgb(191, 191, 191);">
+                                <i class="fas fa-close"></i>
                             </span>
-                        </a>
-                        <!--Links on page-->
-                        <ul class="nav nav-pills flex-grow-1 justify-content-center flex-column mb-sm-auto mb-0 align-items-center" id="menu">
-                            <li class="nav-item">
-                                <a href="#" class="nav-link align-middle px-0">
-                                    <span class="ms-1  ">About</span>
+                        </button>
+                    </div>
+                    <!--Icon-->
+                    <a href="#" onclick="showContent('divIntro')"
+                        class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                        <span class="fs-5  ">
+                            <img src="images/favicon.ico" alt="Nik Logo" class="logo" />
+                        </span>
+                    </a>
+                    <!--Links on page-->
+                    <ul class="nav nav-pills flex-grow-1 justify-content-center flex-column mb-sm-auto mb-0 align-items-center"
+                        id="menu">
+                        <li class="nav-item">
+                            <a href="#about" id="li-about" onclick="showContent('about')"
+                                class="nav-link align-middle px-0 li-nav">
+                                <span class="ms-1  ">About</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#skills" id="li-skills" onclick="showContent('skills')"
+                                class="nav-link px-0 align-middle li-nav">
+                                <span class="ms-1  ">My skills</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#projects" id="li-projects" onclick="showContent('projects')"
+                                class="nav-link px-0 align-middle li-nav">
+                                <span class="ms-1  ">Projects</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#contact" id="li-contact" onclick="showContent('contact')"
+                                class="nav-link px-0 align-middle li-nav">
+                                <span class="ms-1  ">Contact</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <!--Socials-->
+                    <div id="socials" class="d-flex align-items-center pb-4">
+                        <ul class="nav mb-sm-auto mb-0 align-items-center justify-content-evenly" id="socials">
+                            <li class="nav-link">
+                                <a title="LinkedIn profile of Nikhil" href="https://www.linkedin.com/in/nikhilpatil12/"
+                                    class="nav-link align-middle px-0">
+                                    <i class="fa-brands fa-linkedin"></i>
                                 </a>
                             </li>
-                            <li>
-                                <a href="#" class="nav-link px-0 align-middle">
-                                    <span class="ms-1  ">My skills</span>
+                            <li class="nav-link">
+                                <a title="Github profile of Nikhil" href="https://github.com/nikhilpatil12"
+                                    class="nav-link align-middle px-0">
+                                    <i class="fa-brands fa-github"></i>
                                 </a>
                             </li>
-                            <li>
-                                <a href="#" class="nav-link px-0 align-middle">
-                                    <span class="ms-1  ">My work</span> 
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="nav-link px-0 align-middle">
-                                    <span class="ms-1  ">Contact</span> 
+                            <li class="nav-link">
+                                <a title="Instagram profile of Nikhil" href="https://www.instagram.com/nik._.pat/"
+                                    class="nav-link align-middle px-0">
+                                    <i class="fa-brands fa-instagram"></i>
                                 </a>
                             </li>
                         </ul>
-                        <hr>
-                        <!--Socials-->
-                        <div class="d-flex align-items-center pb-4" style="">
-                            <ul class="nav mb-sm-auto mb-0 align-items-center justify-content-evenly" id="socials">
-                                <li class="nav-link">
-                                    <a href="https://www.linkedin.com/in/nikhilpatil12/" class="nav-link align-middle px-0">
-                                        <i class="fa-brands fa-linkedin"></i>
-                                    </a>
-                                </li>
-                                <li class="nav-link">
-                                    <a href="https://github.com/nikhilpatil12" class="nav-link align-middle px-0">
-                                        <i class="fa-brands fa-github"></i>
-                                    </a>
-                                </li>
-                                <li class="nav-link">
-                                    <a href="https://www.instagram.com/nik._.pat/" class="nav-link align-middle px-0">
-                                        <i class="fa-brands fa-instagram"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div id="divMain" class="col-12 col-md-10 col-sm-10 col-lg-10 col-xl-11 px-sm-2 py-3">
-                    <div id="divHamBurgerButton" class="">
-                        <button type="button" id="btnHamBurger" class="d-block d-sm-none btn btn-default" aria-label="Open button" onclick="openNav()">
-                            <span style="font-size: 2em; color: rgb(191, 191, 191);">
-                                <i class="fa-solid fa-bars"></i>
-                            </span>                                
-                        </button>
-                    </div>
-                    <div id="divIntro" class="animate__jello">
-                        <p>Hi,<br>I am Nikhil</p>
                     </div>
                 </div>
             </div>
+            <div id="divMain" class="col-12 col-md-10 col-sm-10 col-lg-10 col-xl-11 px-sm-2 py-3">
+                <div id="divHamBurgerButton">
+                    <button type="button" id="btnHamBurger" class="d-block d-sm-none btn btn-default"
+                        aria-label="Open button" onclick="openNav()">
+                        <span style="font-size: 2em; color: rgb(191, 191, 191);">
+                            <i class="fa-solid fa-bars"></i>
+                        </span>
+                    </button>
+                </div>
+                <div id="divIntro" class="section animate__jello active">
+                    <p>Hi,<br>I am Nikhil</p>
+                </div>
+
+                <div id="about" class="section d-none">
+                    <div class="container">
+                        <h2>About Me</h2>
+                        <p>
+                            Ah, hello there. It's wonderful to meet you. I am a programmer, a machine learning
+                            enthusiast, and a humble Master's degree student in Computer Science. Yes, I know, it's
+                            quite impressive, isn't it? I mean, who doesn't love staying in school for as long as
+                            possible? And let's be honest, nothing quite beats the feeling of being buried under a
+                            mountain of research papers and assignments, am I right? As for machine learning, well,
+                            let's just say I love the thrill of watching machines become smarter than humans. Who needs
+                            job security when you have the potential to be replaced by a glorified calculator, right?
+                            But hey, enough about me. Let's talk about you. What brings you here today?.
+                        </p>
+                    </div>
+                </div>
+                <div id="skills" class="section d-none">
+                    <div class="container">
+                        <h2>Skills</h2>
+                        <p>
+                        <ul class="tech-list">
+                            <li class="tech">Python</li>
+                            <li class="tech">Machine learning</li>
+                            <li class="tech">JavaScript</li>
+                            <li class="tech">Java</li>
+                            <li class="tech">C#</li>
+                            <li class="tech">React</li>
+                            <li class="tech">Angular</li>
+                            <li class="tech">Node.js</li>
+                            <li class="tech">Docker</li>
+                            <li class="tech">Android developement</li>
+                            <li class="tech">AWS</li>
+                            <li class="tech">Git</li>
+                            <li class="tech">Firebase</li>
+                        </ul>
+                        </p>
+                    </div>
+                </div>
+                <div id="projects" class="section d-none">
+                    <div class="container">
+                        <h2>My Projects</h2>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card border-danger mb-3">
+                                    <div class="card-header bg-primary text-white">
+                                        <h3 class="card-title mb-0">Wikipedia Chatbot</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            Chatbot that scrapes wikipedia and does semantic analysis
+                                            on the
+                                            wikipedia to answer questions.</p>
+                                        <ul class="list-unstyled mb-0">
+                                            <li>
+                                                <a class="btn btn-danger btn-sm"
+                                                    href="https://github.com/nikhilpatil12/chatbot">GitHub</a>
+                                                <a class="btn btn-danger btn-sm" href="#">Demo</a>
+                                            </li>
+                                            <li><small class="text-muted">Technologies: Beautiful Soup, Flask, Python,
+                                                    CSS, JavaScript, Angular, Node.js, MongoDB</small></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card border-danger mb-3">
+                                    <div class="card-header bg-primary text-white">
+                                        <h3 class="card-title mb-0">Twitter Bot</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">Twitter bot that posts random technology news articles to a
+                                            Twitter account. The bot uses the News API to get the news articles, and it
+                                            stores the articles it has already posted in a SQLite database to avoid
+                                            duplicates.
+                                        </p>
+                                        <ul class="list-unstyled mb-0">
+                                            <li><a class="btn btn-danger btn-sm"
+                                                    href="https://github.com/nikhilpatil12/TwitterBot">GitHub</a> <a
+                                                    class="btn btn-danger btn-sm"
+                                                    href="https://twitter.com/iTechnoBot">Demo</a></li>
+                                            <li><small class="text-muted">Technologies: Python, Twitter API 2, SQLite,
+                                                    Docker, Cron</small></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card border-danger mb-3">
+                                    <div class="card-header bg-primary text-white">
+                                        <h3 class="card-title mb-0">Weather monitoring web app</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            Weather monitoring web app built with React and the Open-Meteo API with
+                                            real-time weather updates for any location.
+                                        </p>
+                                        <ul class="list-unstyled mb-0">
+                                            <li>
+                                                <a class="btn btn-danger btn-sm"
+                                                    href="https://github.com/nikhilpatil12/weather-website">GitHub</a>
+                                                <a class="btn btn-danger btn-sm"
+                                                    href="https://weather.nikpatil.com">Demo</a>
+                                            </li>
+                                            <li><small class="text-muted">Technologies: HTML, CSS, JavaScript, React,
+                                                    Node.js, Docker</small></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contact" class="section d-none">
+                    <div class="container">
+                        <h2>Contact Me</h2>
+                        <div class="row">
+                            <div class="col">
+                                <p>
+                                    I'm currently seeking new opportunities, just like how Luke Skywalker sought to join
+                                    the Rebellion in Star Wars. I'm open to hearing about new possibilities, whether
+                                    it's becoming a part of the Avengers like Spiderman did in the MCU, or pursuing
+                                    summer internships in any fields that align with my interests and skills.
+                                </p>
+                                <p>Feel free to reach out if you have any questions or just want to say hi!</p>
+                                <a class="btn btn-outline-danger" href="mailto:patil.nikhil12@outlook.com">Contact
+                                    Me</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
-            
-    </body>
+    </div>
+
+</body>
+
 </html>
