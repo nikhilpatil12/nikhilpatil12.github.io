@@ -208,5 +208,5 @@ function resizeRenderer() {
   camera.updateProjectionMatrix();
 }
 
-window.addEventListener("resize", resizeRenderer);
+window.addEventListener("resize", setInterval(resizeRenderer, 50));
 resizeRenderer();

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Word Cloud in Three.js</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+    camera.position.z = 1000;
+    var scene = new THREE.Scene();
+    var geometry = new THREE.SphereGeometry(500, 60, 40);
+    geometry.scale(-1, 1, 1);
+    var material = new THREE.MeshBasicMaterial({
+      map: new THREE.TextureLoader().load('./images/favicon.ico')
+    });
+    var mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+    function animate() {
+      requestAnimationFrame(animate);
+      render();
+    }
+    function render() {
+      var time = Date.now() * 0.005;
+      var rx = Math.sin(time * 0.5) * 0.5,
+        ry = Math.sin(time * 0.3) * 0.5,
+        rz = Math.sin(time * 0.2) * 0.5;
+      camera.lookAt(scene.position);
+      mesh.rotation.x = rx;
+      mesh.rotation.y = ry;
+      mesh.rotation.z = rz;
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+
+</html>
