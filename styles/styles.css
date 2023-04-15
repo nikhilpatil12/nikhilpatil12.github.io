@@ -204,6 +204,11 @@ section h2 {
     scale: 1.2;
 }
 
+.maillink {
+    margin: 20px;
+    margin-left: 0;
+}
+
 section.active {
     animation: slideFromLeft 0.5s ease-in-out;
 }
@@ -244,6 +249,9 @@ section.active {
     margin-bottom: 1rem;
 }
 
+section {
+    margin-top: 40px;
+}
 
 @keyframes slideFromLeft {
     from {
@@ -503,6 +511,24 @@ a.btn i:hover {
     height: max-content;
 }
 
+.imagecontainer {
+    background-color: var(--secondary-color);
+    width: max-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image {
+    transition: all 0.3s;
+    opacity: 0.65;
+}
+
+.image:hover {
+    opacity: 1;
+    transform: translateY(-10px);
+}
+
 /*  Small devices (landscape phones, 576px and up) sm*/
 @media (min-width: 576px) {
     #divMain {
@@ -541,6 +567,11 @@ a.btn i:hover {
     .project-card-links {
         width: 60%;
     }
+
+    section {
+        margin-top: 0px;
+    }
+
 
 }
 
