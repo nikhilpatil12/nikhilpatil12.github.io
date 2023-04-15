@@ -313,9 +313,27 @@ a.btn:hover {
     color: var(--secondary-color);
 }
 
+#resumebutton {
+    padding: 8px;
+    color: var(--secondary-color);
+}
+
 #mailbutton:hover {
-    color: var(--sidebar-color);
+    color: var(--primary-color);
     background-color: var(--secondary-color);
+}
+
+#mailbutton i:hover {
+    color: var(--primary-color);
+}
+
+#resumebutton:hover {
+    color: var(--primary-color);
+    background-color: var(--secondary-color);
+}
+
+#resumebutton i:hover {
+    color: var(--primary-color);
 }
 
 .nikhil {
