@@ -1,3 +1,19 @@
+const openNav = () => {
+  document.getElementById("divPopup").style.height = "100%";
+  // $("#new")[0].style.height = "100%";
+  // document.getElementById("new").style.height = "100%";
+  // document.getElementById("divSide").style.visibility = "visible";
+};
+const closeNav = () => {
+  if (window.outerWidth < 576) {
+    document.getElementById("divPopup").style.height = "0%";
+    // $("#new")[0].style.height = "0%";
+    // document.getElementById("new").style.height = "0%";
+    // document.getElementById("divSide").style.visibility = "collapse";
+  } else {
+    document.getElementById("divHamBurgerButton").style.display = "none";
+  }
+};
 window.addEventListener(
   "resize",
   function (event) {
@@ -69,7 +85,7 @@ document
 // Set up the background mesh
 var planeGeometry = new THREE.PlaneGeometry(200, 400);
 var planeMaterial = new THREE.MeshBasicMaterial({
-  color: 0x282828,
+  color: 0x0a192f,
 });
 var planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
 planeMesh.position.z -= 50;
@@ -82,8 +98,8 @@ var planetGeometry = new THREE.IcosahedronGeometry(2, 2);
 //   // wireframe: true,
 // });
 const planetMaterial = new THREE.MeshPhongMaterial({
-  color: 0x0000ff, // base color of the material
-  specular: 0xfaaaff, // color of the specular highlight
+  color: 0x64ffda, // base color of the material
+  specular: 0x000000, // color of the specular highlight
   shininess: 5, // controls the size and sharpness of the specular highlight
   wireframe: true,
 });
@@ -100,14 +116,14 @@ var planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
 
 scene.add(planetMesh);
 
-const directionallight = new THREE.DirectionalLight(0xff0000, 100);
+const directionallight = new THREE.DirectionalLight(0x000, 1);
 directionallight.position.set(10, -10, 0); // set the direction of the light
 scene.add(directionallight);
-const directionallight2 = new THREE.DirectionalLight(0x0000ff, 100);
+const directionallight2 = new THREE.DirectionalLight(0x000, 1);
 directionallight2.position.set(10, 10, 0); // set the direction of the light
 scene.add(directionallight2);
 
-const ambientlight = new THREE.AmbientLight(0xffffff, 0.6);
+const ambientlight = new THREE.AmbientLight(0xffffff, 0.99);
 scene.add(ambientlight);
 
 var scenefront = new THREE.Scene();
@@ -116,27 +132,13 @@ scenefront.background = null;
 // Set up the mouse circle
 const mouseCircleGeometry = new THREE.RingGeometry(0.01, 0.012, 32);
 const mouseCircleMaterial = new THREE.MeshBasicMaterial({
-  color: 0x0000ff,
+  color: 0xccd6f6,
   transparent: true,
   opacity: 0.5,
 });
 const mouseCircle = new THREE.Mesh(mouseCircleGeometry, mouseCircleMaterial);
 scenefront.add(mouseCircle);
 
-// Create a negative sphere to show what's below the mouse circle
-const mouseCircleRadius = mouseCircle.geometry.parameters.innerRadius;
-const negativeSphereGeometry = new THREE.RingGeometry(0.01, 0.012, 32);
-const negativeSphereMaterial = new THREE.MeshBasicMaterial({
-  color: 0xffffff,
-  side: THREE.BackSide,
-});
-const negativeSphere = new THREE.Mesh(
-  negativeSphereGeometry,
-  negativeSphereMaterial
-);
-negativeSphere.position.copy(mouseCircle.position);
-console.log(mouseCircle.position);
-scenefront.add(negativeSphere);
 // Set up variables for easing and click handling
 let targetPosition = new THREE.Vector3();
 let currentPosition = new THREE.Vector3();
@@ -180,7 +182,6 @@ function animate() {
   const acceleration = difference.multiplyScalar(0.05);
   currentPosition.add(acceleration);
   mouseCircle.position.copy(currentPosition);
-  negativeSphere.position.copy(currentPosition);
 
   // Rotate the planetMesh based on the mouse position
   mouseX != 0 && mouseY != 0
@@ -200,13 +201,20 @@ animate();
 
 const canvasContainer = document.getElementById("canvas-container");
 function resizeRenderer() {
+  // setTimeout(function () {
   const width = canvasContainer.offsetWidth;
   const height = canvasContainer.offsetHeight;
   rendererbg.setSize(width, height);
   rendererfront.setSize(width, height);
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
+  // }, 0);
 }
 
-window.addEventListener("resize", setInterval(resizeRenderer, 50));
 resizeRenderer();
+window.addEventListener("resize", resizeRenderer);
+document.getElementById("btnHamBurger").addEventListener("click", openNav);
+document.getElementById("btnClose").addEventListener("click", closeNav);
+const sectionlinks = document.getElementsByClassName("li-nav");
+for (let i = 0; i < sectionlinks.length; i++)
+  sectionlinks[i].addEventListener("click", closeNav);
