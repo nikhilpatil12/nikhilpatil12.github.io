@@ -1,50 +1,167 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <title>Word Cloud in Three.js</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nikhil Patil - Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      overflow: hidden;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 50px;
+      background-color: #4285f4;
+      color: white;
+    }
+
+    header h1 {
+      font-size: 2.5em;
+    }
+
+    .contact-info {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .icons {
+      margin-top: 20px;
+      font-size: 24px;
+    }
+
+    section {
+      margin: 20px 0;
+      padding: 30px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #4285f4;
+      font-size: 1.8em;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .interests ul {
+      columns: 2;
+    }
+
+    .education p,
+    .skills p,
+    .work-experience p,
+    .projects p,
+    .interests ul li {
+      font-size: 16px;
+    }
+
+    .work-experience ul {
+      columns: 1;
+    }
+
+    .projects .project {
+      margin-bottom: 30px;
+    }
+
+    .project h3 {
+      color: #4285f4;
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    .project p {
+      font-size: 16px;
+    }
+
+    .project .project-links a {
+      display: inline-block;
+      margin-right: 15px;
+      color: #4285f4;
     }
   </style>
 </head>
 
 <body>
-  <script>
-    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.z = 1000;
-    var scene = new THREE.Scene();
-    var geometry = new THREE.SphereGeometry(500, 60, 40);
-    geometry.scale(-1, 1, 1);
-    var material = new THREE.MeshBasicMaterial({
-      map: new THREE.TextureLoader().load('./images/favicon.ico')
-    });
-    var mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-    function animate() {
-      requestAnimationFrame(animate);
-      render();
-    }
-    function render() {
-      var time = Date.now() * 0.005;
-      var rx = Math.sin(time * 0.5) * 0.5,
-        ry = Math.sin(time * 0.3) * 0.5,
-        rz = Math.sin(time * 0.2) * 0.5;
-      camera.lookAt(scene.position);
-      mesh.rotation.x = rx;
-      mesh.rotation.y = ry;
-      mesh.rotation.z = rz;
-      renderer.render(scene, camera);
-    }
-    animate();
-  </script>
+
+  <header>
+    <h1>Nikhil Patil</h1>
+    <p class="contact-info">Email: patil.nikhil12@outlook.com | Phone: (424) 390-9367 | Location: Los Angeles, CA</p>
+    <div class="icons">
+      <a href="https://linkedin.com/in/nikhilpatil12" target="_blank" style="color: white; margin-right: 20px;"><i
+          class="fab fa-linkedin"></i></a>
+      <a href="https://github.com/nikhilpatil12" target="_blank" style="color: white;"><i class="fab fa-github"></i></a>
+    </div>
+  </header>
+
+  <section class="education">
+    <h2>Education</h2>
+    <p>California State University - Master of Science in Computer Science (Jan 2022 – Present)</p>
+    <p>GPA: 3.66/4.0</p>
+    <p>University of Mumbai - Bachelor of Computer Engineering (Jun 2016 – Oct 2020)</p>
+    <p>CGPA: 7.3/10</p>
+  </section>
+
+  <section class="skills">
+    <h2>Skills</h2>
+    <p>Languages: Python, C#, Java, C, JavaScript, SQL, YAML</p>
+    <p>Technologies: Android development, Docker, TensorFlow, scikit-learn, Web Development, Svelte Kit, Angular, React,
+      MongoDB, Raspberry Pi, REST APIs, Bootstrap, Amazon Web Services, Git, .NET</p>
+  </section>
+
+  <section class="work-experience">
+    <h2>Work Experience</h2>
+    <p>Gadre Infotech, Ratnagiri, India - Junior Developer (02/2020 – 02/2021)</p>
+    <ul>
+      <li>Accelerated development through agile methodologies, ensuring rapid bug fixes and seamless integration of new
+        features within weekly release cycles.</li>
+      <li>Proactively performed daily bug fixing, basic quality assurance, and prompt creation of patches, resulting in
+        a 20% reduction in both tester and client-reported bugs.</li>
+      <!-- Add more bullet points as needed -->
+    </ul>
+  </section>
+
+  <section class="projects">
+    <h2>Projects</h2>
+    <div class="project">
+      <h3>WIFI vision: Using WIFI for human position estimation</h3>
+      <p>Designed and developed WiFiVision, a mobile system for human position estimation using WiFi signals...</p>
+      <div class="project-links">
+        <a href="#" target="_blank">Demo</a>
+        <a href="#" target="_blank">GitHub</a>
+      </div>
+    </div>
+    <!-- Add more projects as needed -->
+  </section>
+
+  <section class="interests">
+    <h2>Interests</h2>
+    <ul>
+      <li>🎮 Video games</li>
+      <li>🤖 Artificial Intelligence</li>
+      <li>🚵 Hiking</li>
+      <li>👩‍💻 User Interfaces</li>
+      <li>📚 Learning</li>
+      <li>🏍 Motorcycles</li>
+      <li>🎵 Music</li>
+    </ul>
+  </section>
+
 </body>
 
 </html>

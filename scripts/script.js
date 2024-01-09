@@ -1,3 +1,8 @@
+window.onload = function () {
+  // Hide the preloader once all assets are loaded
+  document.getElementById("preloader").style.display = "none";
+};
+
 const openNav = () => {
   document.getElementById("divPopup").style.height = "100%";
   // $("#new")[0].style.height = "100%";

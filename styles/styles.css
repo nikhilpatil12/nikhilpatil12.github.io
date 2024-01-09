@@ -468,13 +468,14 @@ a.li-nav.nav-link.active span {
     color: var(--secondary-color);
 }
 
-a.btn i {
+a.demolink {
     color: var(--grey);
-    font-size: 25px;
+    font-size: 20px;
     transition: all 0.8s;
+    padding-right: 10px;
 }
 
-a.btn i:hover {
+a.demolink:hover {
     color: var(--secondary-color);
 }
 
@@ -554,7 +555,7 @@ a.btn i:hover {
     }
 
     #projects {
-        height: 98%;
+        /* height: 98%; */
     }
 
     section {
