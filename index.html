@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <title>
@@ -15,12 +15,12 @@
 <body>
     <div id="canvas-container">
     </div>
-    <div class="container-fluid">
-        <div class="row flex-nowrap">
-            <div id="divPopup" class="div-sidebar col-md-2 col-sm-2 col-lg-2 col-xl-1 px-sm-2 px-0">
-                <div id="divSide" class="d-flex flex-column align-items-center px-3 pt-2 text-white min-vh-100">
-                    <div id="divCloseButton" class="d-flex justify-content-end">
-                        <button id="btnClose" type="button" class="d-block d-sm-none btn btn-default"
+    <div class="w-full">
+        <div class="flex flex-nowrap">
+            <div id="divPopup" class="div-sidebar px-0 sm:px-2 w-full sm:w-2/12 md:w-2/12 lg:w-2/12 xl:w-1/12 bg-primary">
+                <div id="divSide" class="flex flex-col items-center px-3 pt-2 text-white min-h-screen">
+                    <div class="w-full flex justify-end items-end">
+                        <button id="btnClose" type="button" class="block sm:hidden p-1.5 rounded text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
                             aria-label="Close button">
                             <span>
                                 <i class="fas fa-close"></i>
@@ -29,55 +29,56 @@
                     </div>
                     <!--Icon-->
                     <a href="#"
-                        class="li-nav d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                        <span class="fs-5  ">
+                        class="li-nav flex-none items-center pb-3 md:mb-0 md:mr-auto text-white no-underline hover:scale-110 [&.current-section-link]:scale-110 transition duration-300 ease-in-out">
+                        <span class="text-xl  ">
                             <img src="images/favicon.ico" alt="Nikhil Patil Logo" class="logo" />
                         </span>
                     </a>
                     <!--Links on page-->
-                    <ul id="navbar"
-                        class="nav nav-pills flex-grow-1 justify-content-center flex-column mb-sm-auto mb-0 align-items-center"
-                        id="menu">
-                        <li class="nav-item">
-                            <a href="#about" id="li-about" class="nav-link align-middle px-0 li-nav">
-                                <span class="ms-1  ">About</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#skills" id="li-skills" class="nav-link px-0 align-middle li-nav">
-                                <span class="ms-1  ">My skills</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#projects" id="li-projects" class="nav-link px-0 align-middle li-nav">
-                                <span class="ms-1  ">Projects</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#contact" id="li-contact" class="nav-link px-0 align-middle li-nav">
-                                <span class="ms-1  ">Contact</span>
-                            </a>
-                        </li>
-                    </ul>
+                    <div class="grow flex flex-col justify-center sm:mb-auto mb-0 items-center">
+                        <ul class="flex flex-col h-full justify-center"
+                            id="menu">
+                            <li class="nav-item">
+                                <a href="#about" id="li-about" class="block py-2 px-0 li-nav text-white hover:text-secondary hover:scale-110 [&.current-section-link]:text-secondary [&.current-section-link]:scale-110 transition duration-300 ease-in-out no-underline align-middle">
+                                    <span class="ml-1">About</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#skills" id="li-skills" class="block py-2 px-0 li-nav text-white hover:text-secondary hover:scale-110 [&.current-section-link]:text-secondary [&.current-section-link]:scale-110 transition duration-300 ease-in-out no-underline align-middle">
+                                    <span class="ml-1">Skills</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#projects" id="li-projects" class="block py-2 px-0 li-nav text-white hover:text-secondary hover:scale-110 [&.current-section-link]:text-secondary [&.current-section-link]:scale-110 transition duration-300 ease-in-out no-underline align-middle">
+                                    <span class="ml-1">Projects</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#contact" id="li-contact" class="block py-2 px-0 li-nav text-white hover:text-secondary hover:scale-110 [&.current-section-link]:text-secondary [&.current-section-link]:scale-110 transition duration-300 ease-in-out no-underline align-middle">
+                                    <span class="ml-1">Contact</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     <hr>
                     <!--Socials-->
-                    <div id="socials" class="d-flex align-items-center pb-4">
-                        <ul class="nav mb-sm-auto mb-0 align-items-center justify-content-evenly" id="socials">
-                            <li class="nav-link">
+                    <div id="socials" class="flex-none items-center pb-4">
+                        <ul class="sm:mb-auto mb-0 items-center justify-evenly flex flex-col" id="socials">
+                            <li class="p-2 nav-link">
                                 <a title="LinkedIn profile of Nikhil Patil"
-                                    href="https://www.linkedin.com/in/nikhilpatil12/" class="align-middle px-0 li-nav">
+                                    href="https://www.linkedin.com/in/nikhilpatil12/" class="align-middle px-0 li-nav text-white hover:text-gray-300">
                                     <i class="fa-brands fa-linkedin" style="font-size: 30px;"></i>
                                 </a>
                             </li>
-                            <li class="nav-link">
+                            <li class="p-2 nav-link">
                                 <a title="Github profile of Nikhil Patil" href="https://github.com/nikhilpatil12"
-                                    class="align-middle px-0 li-nav">
+                                    class="align-middle px-0 li-nav text-white hover:text-gray-300">
                                     <i class="fa-brands fa-github" style="font-size: 30px;"></i>
                                 </a>
                             </li>
-                            <li class="nav-link">
+                            <li class="p-2 nav-link">
                                 <a title="Instagram profile of Nikhil Patil"
-                                    href="https://www.instagram.com/nikhhilism/" class="align-middle px-0 li-nav">
+                                    href="https://www.instagram.com/nikhhilism/" class="align-middle px-0 li-nav text-white hover:text-gray-300">
                                     <i class="fa-brands fa-instagram" style="font-size: 30px;"></i>
                                 </a>
                             </li>
@@ -85,33 +86,33 @@
                     </div>
                 </div>
             </div>
-            <div data-bs-spy="scroll" data-bs-target="#navbar" id="divMain"
-                class="col-12 col-md-10 col-sm-10 col-lg-10 col-xl-11 px-sm-2 py-3">
+            <div id="divMain"
+                class="w-full sm:w-10/12 md:w-10/12 lg:w-10/12 xl:w-11/12 sm:px-2 py-3">
                 <div id="divHamBurgerButton">
-                    <button type="button" id="btnHamBurger" class="d-block d-sm-none btn btn-default"
+                    <button type="button" id="btnHamBurger" class="block sm:hidden p-1.5 rounded text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
                         aria-label="Open button">
                         <span>
                             <i class="fa-solid fa-bars"></i>
                         </span>
                     </button>
                 </div>
-                <section id="#" class="divIntro section animate__jello active">
+                <section id="#" class="divIntro section animate__jello">
                     <span class="intro">
-                        <div class="row">
+                        <div class="flex">
                             <div>
                                 <span class="jiggle-letter">H</span><span class="jiggle-letter">i</span><span
                                     class="jiggle-letter">,</span>
                             </div>
 
                         </div>
-                        <div class="row">
+                        <div class="flex">
                             <div>
                                 <span class="jiggle-letter">I</span> <span class="jiggle-letter">a</span><span
                                     class="jiggle-letter">m</span>
                             </div>
                         </div>
                     </span>
-                    <div class="row">
+                    <div class="flex">
                         <span class="nikhil">
                             <span class="jiggle-letter">N</span><span class="jiggle-letter">i</span><span
                                 class="jiggle-letter">k</span><span class="jiggle-letter">h</span><span
@@ -125,14 +126,12 @@
 
                 <section id="about">
                     <h2>About Me</h2>
-                    <div class="d-flex justify-content-center align-items-center fs-2">
+                    <div class="flex justify-center items-center text-4xl">
                         Hey there!
                         <br>
-                        Nice to e-meet you. I'm a programmer, a dedicated machine learning enthusiast, and currently
-                        pursuing a Master's degree in Computer Science at CSUN. The balancing act of coursework,
-                        research papers, and assignments is quite the journey, but it's all part of the adventure,
-                        right? I'm captivated by the continuous evolution of machines, surpassing human intelligence.
-                        Job security may be a thing of the past, thanks to our sophisticated calculators!
+                            I’m Nikhil Patil, a software engineer with a Master’s in Computer Science and experience across mobile, web, and DevOps.
+                            I specialize in Flutter development, containerized deployments, and building scalable systems from UI to infrastructure.
+                            I'm based in India and passionate about shipping clean, reliable, and user-focused software.
                     </div>
                 </section>
                 <section id="skills">
@@ -140,7 +139,7 @@
                         <!-- TODO: Update Style -->
                         <h2>Skills</h2>
                         <div class="scrollanimation">
-                            <ul class="tech-list">
+                            <ul class="tech-list list-none p-0 m-0">
                                 <li class="tech">Python</li>
                                 <li class="tech">Machine learning</li>
                                 <li class="tech">JavaScript</li>
@@ -157,45 +156,45 @@
                             </ul>
                         </div>
                 </section>
-                <section id="projects">
+                <section id="projects" class=" overflow-clip">
                     <div>
                         <h2>My Projects</h2>
-                        <div class="col-12 project-card">
+                        <div class="w-full hover:-translate-y-1.5 hover:duration-500 transition-all duration-1500 opacity-0 translate-x-40 slide-in-right">
                             <div>
-                                <h3 class="mb-0 text-start">Flame Feeds</h3>
+                                <h3 class="mb-0 text-left text-3xl">Blaze Feeds - AI RSS Reader</h3>
                             </div>
-                            <div class="project-card-description left-card fs-6">
-                                A cross-platform RSS reader app written in Flutter that allows users to read news from their RSS sources and also syncs with their FreshRSS accounts. Supports offline reading, AI summarization and customizable themes. The app will soon be available on the Google Play Store and the Apple App Store.
+                            <div class="project-card-description left-card text-base">
+                                A cross-platform RSS reader app written in Flutter that allows users to read news from their RSS sources
+                                and also syncs with their FreshRSS accounts. Supports offline reading, AI summarization and customizable
+                                themes. The app will soon be available on the Google Play Store and the Apple App Store.
                             </div>
                             <div class="project-card-links left-card">
-                                <ul class="list-unstyled">
+                                <ul class="list-none">
                                     <li>
-                                        <a title="Link for Chatbot's source code on Nikhil Patil's Github"
-                                            class="btn demolink" target="_blank" rel="noopener"
+                                        <!-- <a title="Link for Chatbot\'s source code on Nikhil Patil\'s Github"
+                                            class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank" rel="noopener"
                                             href="https://github.com/nikhilpatil12/chatbot">
                                             <i class="fa-brands fa-github"></i>
-                                        </a>
-                                        <a title="Link to demo version of Chatbot" class="btn demolink" target="_blank"
-                                            rel="noopener" href="https://wikichat.nikpatil.com">
+                                        </a> -->
+                                        <a title="Link to the Landing page of the app" class="text-secondary inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded hover:text-white" target="_blank"
+                                            rel="noopener" href="https://blazefeeds.nikpatil.com">
                                             <i class="fa fa-link"></i>
-                                            Demo
+                                            App Landing Page
                                         </a>
                                     </li>
                                     <li>
                                         <div>
-                                            Wikipedia, NLTK, SpaCy, Flask,
-                                            Python,
-                                            CSS, JavaScript, Angular, Node.js, MongoDB
+                                            Flutter, SQLite, REST APIs, OpenAI API, Gemini API, Provider, App Store, Play Store, RevenueCat
                                         </div>
                                     </li>
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-12 project-card">
+                        <div class="w-full hover:-translate-y-1.5 hover:duration-500 transition-all duration-1500 opacity-0 -translate-x-40 slide-in-left">
                             <div>
-                                <h3 class="mb-0 text-end">Wikipedia Chatbot</h3>
+                                <h3 class="mb-0 text-right text-3xl">Wikipedia Chatbot</h3>
                             </div>
-                            <div class="project-card-description right-card fs-6">
+                            <div class="project-card-description right-card text-base">
                                 Chatbot that scrapes wikipedia and does semantic analysis
                                 on the
                                 wikipedia to answer questions. The chatbot is designed to answer
@@ -205,14 +204,14 @@
                                 question.
                             </div>
                             <div class="project-card-links right-card">
-                                <ul class="list-unstyled">
+                                <ul class="list-none">
                                     <li>
-                                        <a title="Link for Chatbot's source code on Nikhil Patil's Github"
-                                            class="btn demolink" target="_blank" rel="noopener"
+                                        <a title="Link for Chatbot\'s source code on Nikhil Patil\'s Github"
+                                            class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank" rel="noopener"
                                             href="https://github.com/nikhilpatil12/chatbot">
                                             <i class="fa-brands fa-github"></i>
                                         </a>
-                                        <a title="Link to demo version of Chatbot" class="btn demolink" target="_blank"
+                                        <a title="Link to demo version of Chatbot" class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank"
                                             rel="noopener" href="https://wikichat.nikpatil.com">
                                             <i class="fa fa-link"></i>
                                             Demo
@@ -228,26 +227,26 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-12 project-card">
+                        <div class="w-full hover:-translate-y-1.5 hover:duration-500 transition-all duration-1500 opacity-0 translate-x-40 slide-in-right">
                             <div>
-                                <h3 class="mb-0 text-start">Twitter Bot</h3>
+                                <h3 class="mb-0 text-left text-3xl">Twitter Bot</h3>
                             </div>
-                            <div class="project-card-description left-card fs-6">
+                            <div class="project-card-description left-card text-base">
                                 A Twitter bot that posts random technology news articles to
                                 a Twitter account. The bot uses the News API to get the news articles, and
                                 it stores the articles it has already posted in a SQLite database to avoid
                                 duplicates.
                             </div>
                             <div class="project-card-links left-card">
-                                <ul class="list-unstyled">
+                                <ul class="list-none">
                                     <li>
-                                        <a title="Link for Twitterbot's source code on Nikhil Patil's Github"
-                                            class="btn demolink" target="_blank" rel="noopener"
+                                        <a title="Link for Twitterbot\'s source code on Nikhil Patil\'s Github"
+                                            class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank" rel="noopener"
                                             href="https://github.com/nikhilpatil12/TwitterBot">
                                             <i class="fa-brands fa-github"></i>
                                         </a>
-                                        <a title="Link to live version of Twitterbot's Twitter Account"
-                                            class="btn demolink" target="_blank" rel="noopener"
+                                        <a title="Link to live version of Twitterbot\'s Twitter Account"
+                                            class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank" rel="noopener"
                                             href="https://twitter.com/iTechnoBot">
                                             <i class="fa fa-link"></i>
                                             Demo
@@ -262,23 +261,23 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-12 project-card">
+                        <div class="w-full hover:-translate-y-1.5 hover:duration-500 transition-all duration-1500 opacity-0 -translate-x-40 slide-in-left">
                             <div>
-                                <h3 class="mb-0 text-end">Weather app</h3>
+                                <h3 class="mb-0 text-right text-3xl">Weather app</h3>
                             </div>
-                            <div class="project-card-description right-card fs-6">
+                            <div class="project-card-description right-card text-base">
                                 Weather monitoring web app built with React and the Open-Meteo API with
                                 real-time weather updates for any location.
                             </div>
                             <div class="project-card-links right-card">
-                                <ul class="list-unstyled">
+                                <ul class="list-none">
                                     <li>
-                                        <a title="Source code for Weather App on Nikhil Patil's Github"
-                                            class="btn demolink" target="_blank" rel="noopener"
+                                        <a title="Source code for Weather App on Nikhil Patil\'s Github"
+                                            class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank" rel="noopener"
                                             href="https://github.com/nikhilpatil12/weather-website">
                                             <i class="fa-brands fa-github"></i>
                                         </a>
-                                        <a title="Live demo of weather app" class="btn demolink" target="_blank"
+                                        <a title="Live demo of weather app" class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank"
                                             rel="noopener" href="https://weather.nikpatil.com">
                                             <i class="fa fa-link"></i>
                                             Demo
@@ -294,24 +293,24 @@
                             </div>
                         </div>
                         <!-- Steam Library Viewer Project -->
-                        <div class="col-12 project-card">
+                        <div class="w-full hover:-translate-y-1.5 hover:duration-500 transition-all duration-1500 opacity-0 translate-x-40 slide-in-right">
                             <div>
-                                <h3 class="mb-0 text-start">Steam Library Viewer</h3>
+                                <h3 class="mb-0 text-left text-3xl">Steam Library Viewer</h3>
                             </div>
-                            <div class="project-card-description left-card fs-6">
+                            <div class="project-card-description left-card text-base">
                                 This web tool provides a user-friendly web interface for exploring your Steam library.
                                 The project is structured around two main components: the Express API and the SvelteKit
                                 app.
                             </div>
                             <div class="project-card-links left-card">
-                                <ul class="list-unstyled">
+                                <ul class="list-none">
                                     <li>
-                                        <a title="Link for Steam Library Viewer's source code on Nikhil Patil's Github"
-                                            class="btn demolink" target="_blank" rel="noopener"
+                                        <a title="Link for Steam Library Viewer\'s source code on Nikhil Patil\'s Github"
+                                            class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank" rel="noopener"
                                             href="https://github.com/nikhilpatil12/SteamLibraryViewer">
                                             <i class="fa-brands fa-github"></i>
                                         </a>
-                                        <a title="Link to live version of Steam Library Viewer" class="btn demolink"
+                                        <a title="Link to live version of Steam Library Viewer" class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white"
                                             target="_blank" rel="noopener" href="https://steamapp.nikpatil.com">
                                             <i class="fa fa-link"></i>
                                             Demo
@@ -326,12 +325,12 @@
                             </div>
                         </div>
                         <!-- Delivery Drone Project -->
-                        <div class="col-12 project-card">
+                        <div class="w-full hover:-translate-y-1.5 hover:duration-500 transition-all duration-1500 opacity-0 -translate-x-40 slide-in-left">
                             <div>
-                                <h3 class="mb-0 text-end">Delivery Drone</h3>
+                                <h3 class="mb-0 text-right text-3xl">Delivery Drone</h3>
                             </div>
-                            <div class="project-card-description right-card fs-6">
-                                <ul>
+                            <div class="project-card-description right-card text-base">
+                                <ul class="list-disc list-inside">
                                     <li>
                                         Engineered an Android application utilizing the Google Maps SDK for accurate
                                         drone
@@ -357,10 +356,10 @@
                                 </ul>
                             </div>
                             <div class="project-card-links right-card">
-                                <ul class="list-unstyled">
+                                <ul class="list-none">
                                     <li>
-                                        <a title="Link for Steam Library Viewer's source code on Nikhil Patil's Github"
-                                            class="btn demolink" target="_blank" rel="noopener"
+                                        <a title="Link for Steam Library Viewer\'s source code on Nikhil Patil\'s Github"
+                                            class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank" rel="noopener"
                                             href="https://github.com/nikhilpatil12/MapsInAction">
                                             <i class="fa-brands fa-github"></i>
                                         </a>
@@ -376,11 +375,11 @@
                         </div>
 
                         <!-- Credit Card Acceptance Prediction Project -->
-                        <div class="col-12 project-card">
+                        <div class="w-full hover:-translate-y-1.5 hover:duration-500 transition-all duration-1500 opacity-0 translate-x-40 slide-in-right">
                             <div>
-                                <h3 class="mb-0 text-start">Credit Card Acceptance Prediction</h3>
+                                <h3 class="mb-0 text-left text-3xl">Credit Card Acceptance Prediction</h3>
                             </div>
-                            <div class="project-card-description left-card fs-6">
+                            <div class="project-card-description left-card text-base">
                                 Developed an intricate XGBoost machine learning model attaining a remarkable 87%
                                 accuracy in predicting credit card acceptance rates.
                                 Leveraged cutting-edge feature engineering methodologies to expertly extract and analyze
@@ -388,10 +387,10 @@
                                 enhancing the predictive power and robustness of the model.
                             </div>
                             <div class="project-card-links left-card">
-                                <ul class="list-unstyled">
+                                <ul class="list-none">
                                     <li>
-                                        <a title="Link for Steam Library Viewer's source code on Nikhil Patil's Github"
-                                            class="btn demolink" target="_blank" rel="noopener"
+                                        <a title="Link for Steam Library Viewer\'s source code on Nikhil Patil\'s Github"
+                                            class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank" rel="noopener"
                                             href="https://github.com/OrbelB/MLCreditCards">
                                             <i class="fa-brands fa-github"></i>
                                         </a>
@@ -405,25 +404,25 @@
                             </div>
                         </div>
                         <!-- Joke Generator API Project -->
-                        <div class="col-12 project-card">
+                        <div class="w-full hover:-translate-y-1.5 hover:duration-500 transition-all duration-1500 opacity-0 -translate-x-40 slide-in-left">
                             <div>
-                                <h3 class="mb-0 text-end">Joke Generator API</h3>
+                                <h3 class="mb-0 text-right text-3xl">Joke Generator API</h3>
                             </div>
-                            <div class="project-card-description right-card fs-6">
+                            <div class="project-card-description right-card text-base">
                                 Joke Generator API, a simple Express.js application that generates jokes as
                                 SVG images.
                                 It utilizes the Canvas library to craft the image and serves it through a dedicated API
                                 endpoint.
                             </div>
                             <div class="project-card-links right-card">
-                                <ul class="list-unstyled">
+                                <ul class="list-none">
                                     <li>
-                                        <a title="Link for Joke Generator API's source code on Nikhil Patil's Github"
-                                            class="btn demolink" target="_blank" rel="noopener"
+                                        <a title="Link for Joke Generator API\'s source code on Nikhil Patil\'s Github"
+                                            class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white" target="_blank" rel="noopener"
                                             href="https://github.com/nikhilpatil12/JokeGenerator">
                                             <i class="fa-brands fa-github"></i>
                                         </a>
-                                        <a title="Link to live demo of Joke Generator API" class="btn demolink"
+                                        <a title="Link to live demo of Joke Generator API" class="inline-block font-normal text-center no-underline align-middle cursor-pointer select-none border border-transparent py-1.5 px-3 text-base rounded text-secondary hover:text-white"
                                             target="_blank" rel="noopener" href="https://jokerr.nikpatil.com/api/image">
                                             <i class="fa fa-link"></i>
                                             Demo
@@ -443,29 +442,24 @@
                 <section id="contact">
                     <div>
                         <h2>Contact Me</h2>
-                        <div class="row">
-                            <div class="col">
+                        <div class="flex">
+                            <div class="w-full">
                                 <p>
-                                    I am currently exploring exciting career prospects, with a keen focus on optimizing
-                                    and applying my expertise in Android development, Machine Learning, and Full Stack
-                                    development. My extensive experience in these domains positions me well for roles
-                                    that demand innovative solutions and technical versatility. I am enthusiastic about
-                                    contributing my skills to diverse projects and industries, and I am open to engaging
-                                    opportunities that align with my professional aspirations.
+                                    I'm currently open to full-time and remote roles. If you're looking for a developer who can work across the stack and deliver clean, scalable solutions — let's connect.
                                 </p>
                                 <p>Feel free to reach out if you have any questions or just want to say hi!</p>
                                 <div class="imagecontainer">
-                                    <img class="image" width="200px" src="./images/Nikhil Patil.jpeg"
+                                    <img class="image md:grayscale-100 md:hover:grayscale-0 md:hover:translate-2 transition-all duration-300" width="200px" src="./images/Nikhil Patil.jpeg"
                                         alt="Nikhil Patil's picture" />
                                 </div>
                                 <div class="maillink">
-                                    <a id="mailbutton" class="btn btn-outline-secondary"
+                                    <a id="mailbutton" class="border border-gray-500 text-gray-500 hover:bg-gray-500 hover:text-white py-1.5 px-3 rounded font-normal text-base inline-block text-center no-underline align-middle cursor-pointer select-none"
                                         href="mailto:patil.nikhil12@outlook.com">
                                         <i class="fa fa-envelope"></i>
                                         Contact Me
                                     </a>
-                                    <a id="resumebutton" class="btn btn-outline-secondary" target="_blank"
-                                        rel="noopener" href="./Nikhil Patil Resume Web Oct 2024.pdf">
+                                    <a id="resumebutton" class="border border-gray-500 text-gray-500 hover:bg-gray-500 hover:text-white py-1.5 px-3 rounded font-normal text-base inline-block text-center no-underline align-middle cursor-pointer select-none" target="_blank"
+                                        rel="noopener" href="./Nikhil Patil Resume.pdf">
                                         <i class="fa fa-download"></i>
                                         Resume
                                     </a>
@@ -494,14 +488,10 @@
     </script>
     <!-- End Matomo Code -->
 
-    <link rel="stylesheet" href="./styles/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="./styles/output.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script> -->
     <script src="https://kit.fontawesome.com/95a8faf6e4.js" crossorigin="anonymous"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.151.3/three.js"
-        integrity="sha512-BwyZPvtawNInmLsREIDelsBWnyXzmR11MF6SG1VSkQ51YhMkdNFxL9sGKgRzTX7drQzCLVheb4sobHNGpwCn+w=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
     <script type="importmap"> { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@v0.169.0/build/three.module.js",
       "three/addons/": "https://cdn.jsdelivr.net/npm/three@v0.169.0/examples/jsm/" } } </script>
     <script type="module" src="./scripts/script.js"></script>

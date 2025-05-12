@@ -1,7 +1,147 @@
-window.onload = function () {
-  // Hide the preloader once all assets are loaded
-  document.getElementById("preloader").style.display = "none";
-};
+// window.onload = function () {
+//   // Hide the preloader once all assets are loaded
+//   document.getElementById("preloader").style.display = "none";
+// };
+document.addEventListener("DOMContentLoaded", () => {
+  const sections = document.querySelectorAll("section[id]");
+  const navLinks = document.querySelectorAll("#menu a.li-nav"); // Target links within the menu
+
+  if (!sections.length || !navLinks.length) {
+    console.log("Scrollspy setup failed: Sections or Nav links not found.");
+    return;
+  }
+
+  const observerOptions = {
+    root: null, // relative to viewport
+    rootMargin: "0px",
+    threshold: 0.4, // Trigger when 40% of the section is visible
+  };
+
+  let activeSectionId = null;
+  let lastY = window.scrollY;
+  const observerCallback = (entries) => {
+    // let minTopValue = Infinity;
+    let foundIntersecting = false;
+
+    entries.forEach((entry) => {
+      const goingUp = window.scrollY < lastY;
+      lastY = window.scrollY;
+      if (entry.isIntersecting) {
+        console.log(
+          "Intersected while",
+          goingUp ? "scrolling up" : "scrolling down",
+        );
+
+        foundIntersecting = true;
+        // Find the section whose top is closest to the top of the viewport
+        // const top = entry.boundingClientRect.top;
+        // Prioritize sections closer to the top, allowing for slight negative values
+        // This helps when scrolling up and a section top passes the viewport top slightly
+        // if (top >= -100 && top < minTopValue) {
+        // minTopValue = top;
+        activeSectionId = entry.target.id;
+        // }
+      }
+    });
+
+    // If no section met the criteria (e.g., scrolled past all sections quickly),
+    // you might want a fallback or just keep the last active one.
+    // For simplicity, we only update if we found a suitable intersecting section.
+    console.log("Active Section ID:", activeSectionId); // DEBUG LOG
+
+    // Update navigation links
+    navLinks.forEach((link) => {
+      link.classList.remove("current-section-link");
+      const linkHref = link.getAttribute("href");
+      // Check if linkHref is not null and remove the leading '#'
+      const linkSectionId = linkHref ? linkHref.substring(1) : null;
+
+      if (linkSectionId && linkSectionId === activeSectionId) {
+        console.log("Highlighting:", link.getAttribute("href")); // DEBUG LOG
+        link.classList.add("current-section-link");
+      }
+    });
+
+    // Special case: If scrolled to the very top, highlight 'about' or the first link
+    // if (window.scrollY === 0 && navLinks.length > 0) {
+    //   navLinks.forEach((link) => link.classList.remove("current-section-link"));
+    //   // Assuming the first link corresponds to the top-most section if applicable
+    //   const firstLink = document.querySelector('#menu a.li-nav[href^="#"]');
+    //   if (firstLink) {
+    //     firstLink.classList.add("current-section-link");
+    //   }
+    // }
+
+    // Special case: If scrolled to the very bottom, highlight 'contact'
+    // Check if the bottom of the page is reached
+    // if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 2) {
+    //   // Add a small buffer
+    //   navLinks.forEach((link) => link.classList.remove("current-section-link"));
+    //   const contactLink = document.querySelector(
+    //     '#menu a.li-nav[href="#contact"]',
+    //   );
+    //   if (contactLink) {
+    //     contactLink.classList.add("current-section-link");
+    //   }
+    // }
+  };
+
+  const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+  sections.forEach((section) => {
+    observer.observe(section);
+  });
+
+  // Initial check in case the page loads mid-way or at the bottom
+  // We can trigger the callback logic once manually, but it might be complex
+  // without the intersection data. A simpler initial state might be to
+  // just highlight the first link by default.
+  if (navLinks.length > 0 && window.scrollY < 100) {
+    // If near the top on load
+    const firstLink = document.querySelector('#menu a.li-nav[href^="#"]');
+    if (firstLink) {
+      firstLink.classList.add("current-section-link");
+    }
+  }
+
+  const left_in_observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove("opacity-0", "-translate-x-40");
+          entry.target.classList.add("opacity-100", "translate-x-0");
+          observer.unobserve(entry.target); // animate only once
+        }
+      });
+    },
+    {
+      threshold: 0.4,
+    },
+  );
+
+  document.querySelectorAll(".slide-in-left").forEach((el) => {
+    left_in_observer.observe(el);
+  });
+
+  const right_in_observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove("opacity-0", "translate-x-40");
+          entry.target.classList.add("opacity-100", "translate-x-0");
+          observer.unobserve(entry.target); // animate only once
+        }
+      });
+    },
+    {
+      threshold: 0.4,
+    },
+  );
+
+  document.querySelectorAll(".slide-in-right").forEach((el) => {
+    right_in_observer.observe(el);
+  });
+});
 
 const openNav = () => {
   document.getElementById("divPopup").style.height = "100%";
@@ -25,7 +165,7 @@ window.addEventListener(
     if (event.target.outerWidth < 576) closeNav();
     else openNav();
   },
-  true
+  true,
 );
 window.addEventListener(
   "load",
@@ -52,7 +192,7 @@ window.addEventListener(
       window.addEventListener("mouseup", onMouseUp, false);
     }
   },
-  false
+  false,
 );
 import * as THREE from "three";
 // Set up the scene, camera, and renderer
@@ -61,7 +201,7 @@ var camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  1000,
 );
 camera.position.z = 5; // Create the first canvas
 const canvasbg = document.createElement("canvas");
@@ -154,7 +294,7 @@ function onMouseMove(event) {
   targetPosition.set(
     (event.clientX / window.innerWidth) * 2 - 1,
     -(event.clientY / window.innerHeight) * 2 + 1,
-    0.5
+    0.5,
   );
   targetPosition.unproject(camera);
 }
