@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Interactive Word Cloud (LTR & RTL Movement)</title>
+        <link rel="stylesheet" href="styles.css" />
+        <style>
+            body {
+                margin: 0;
+                overflow: hidden;
+                background-color: #f5f5f5;
+            }
+
+            .word {
+                position: absolute;
+                font-size: 2rem;
+                font-weight: 600;
+                color: #333;
+                user-select: none;
+                pointer-events: all;
+                opacity: 0;
+                transition:
+                    transform 0.3s ease,
+                    opacity 0.5s ease;
+            }
+
+            .word:hover {
+                transform: scale(1.5);
+                z-index: 100;
+            }
+
+            .word-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="word-container"></div>
+
+        <script>
+            const words = [
+                "JavaScript",
+                "React",
+                "Node.js",
+                "Docker",
+                "CSS",
+                "HTML",
+                "Kubernetes",
+                "Tailwind",
+                "Express",
+                "MongoDB",
+                "TypeScript",
+                "Redis",
+                "GraphQL",
+                "Angular",
+                "Flutter",
+                "Java",
+                "Vue",
+            ];
+
+            const body = document.querySelector(".word-container");
+            const minSpacing = 100; // Minimum space between words
+
+            function createWord() {
+                const word = words[Math.floor(Math.random() * words.length)];
+                const wordElement = document.createElement("div");
+                wordElement.classList.add("word");
+                wordElement.innerText = word;
+
+                const fontSize = Math.random() * 3 + 2; // Random font size (2-5rem)
+                wordElement.style.fontSize = `${fontSize}rem`;
+
+                // Set a random position vertically, and horizontally starting from an off-screen position
+                const yPos =
+                    Math.random() * (window.innerHeight - fontSize * 10); // random y-position, avoiding overlap
+                const xStartPos =
+                    Math.random() > 0.5
+                        ? -fontSize * 10
+                        : window.innerWidth + fontSize * 10; // start off-screen, either left or right
+
+                wordElement.style.left = `${xStartPos}px`;
+                wordElement.style.top = `${yPos}px`;
+
+                body.appendChild(wordElement);
+
+                // Gradually fade the word in
+                setTimeout(() => {
+                    wordElement.style.opacity = 1;
+                }, 100);
+
+                // Set word's movement direction and speed
+                const direction = xStartPos < 0 ? 1 : -1; // Move to the right if starting from the left, else to the left
+                const speed = Math.random() * 0.5 + 0.5; // Random speed for each word
+
+                function moveWord() {
+                    let currentX = parseFloat(wordElement.style.left);
+
+                    // Move left or right depending on the direction
+                    wordElement.style.left = `${currentX + direction * speed}px`;
+
+                    // Reset word's position if it goes off-screen
+                    if (
+                        currentX > window.innerWidth ||
+                        currentX < -fontSize * 10
+                    ) {
+                        wordElement.style.left =
+                            direction < 0
+                                ? window.innerWidth + fontSize * 10
+                                : -fontSize * 10;
+                    }
+
+                    requestAnimationFrame(moveWord);
+                }
+
+                moveWord();
+
+                // Remove word after a certain period (8 seconds)
+                setTimeout(() => {
+                    wordElement.remove();
+                }, 8000);
+            }
+
+            // Generate words continuously at a slower pace
+            setInterval(createWord, 1000); // Create a word every second
+        </script>
+    </body>
+</html>
