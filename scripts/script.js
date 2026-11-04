@@ -136,9 +136,6 @@ function setupTimelineAnimation() {
   const spineProgress = document.getElementById("spineProgress");
   if (!timelineContainer || !spineProgress) return;
 
-  const yearBlocks = Array.from(
-    document.querySelectorAll("#timelineContainer [data-year]")
-  );
   const nodes = {
     2026: document.getElementById("node-2026"),
     2025: document.getElementById("node-2025"),
@@ -153,22 +150,27 @@ function setupTimelineAnimation() {
     ticking = false;
     const rect = timelineContainer.getBoundingClientRect();
     const windowHeight = window.innerHeight;
-    const triggerOffset = windowHeight * 0.65;
-    const start = rect.top;
+    // Trigger laser when timeline reaches lower 72% of viewport
+    const triggerY = windowHeight * 0.72;
     const totalHeight = rect.height;
+    const isAtBottom =
+      window.innerHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 50;
 
     let progressPx = 0;
-    if (start < triggerOffset) {
-      progressPx = Math.min(totalHeight, triggerOffset - start);
+    if (isAtBottom) {
+      progressPx = totalHeight;
+    } else if (rect.top < triggerY) {
+      progressPx = Math.max(0, Math.min(totalHeight, triggerY - rect.top));
     }
     spineProgress.style.height = `${progressPx}px`;
 
-    yearBlocks.forEach((block) => {
-      const year = block.getAttribute("data-year");
-      const node = nodes[year];
+    // Each node activates precisely when the cyan laser reaches its offset
+    Object.entries(nodes).forEach(([year, node]) => {
       if (!node) return;
       const nodeRect = node.getBoundingClientRect();
-      if (nodeRect.top <= triggerOffset + 20) {
+      const nodeOffsetFromContainer = nodeRect.top - rect.top;
+      if (progressPx > 0 && progressPx >= nodeOffsetFromContainer - 12) {
         node.classList.add("active");
       } else {
         node.classList.remove("active");
@@ -184,8 +186,9 @@ function setupTimelineAnimation() {
   }
 
   window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", updateSpine);
+  window.addEventListener("resize", updateSpine, { passive: true });
   updateSpine();
+  setTimeout(updateSpine, 100);
 
   // Card hover circuit connectors: pulse that year's node
   const cards = document.querySelectorAll("#timelineContainer .timeline-card");
@@ -204,6 +207,16 @@ function setupTimelineAnimation() {
     });
   });
 }
+
+// Global safety fallbacks for card hover
+window.onCardEnter = function (year) {
+  const node = document.getElementById(`node-${year}`);
+  if (node) node.classList.add("highlight-pulse");
+};
+window.onCardLeave = function (year) {
+  const node = document.getElementById(`node-${year}`);
+  if (node) node.classList.remove("highlight-pulse");
+};
 
 function initUI() {
   setupNav();
@@ -224,6 +237,7 @@ async function initThree() {
 
   try {
     const THREE = await import("three");
+    const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
