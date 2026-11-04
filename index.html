@@ -297,40 +297,40 @@
                             <h2>Projects &amp; Systems</h2>
 
                             <!-- Timeline Wrapper -->
-    <div class="relative">
+    <div id="timelineContainer" class="relative">
       
-      <!-- Central vertical spine (Desktop: exact center; Mobile: left-4) -->
-      <div class="absolute left-4 md:left-1/2 top-2 bottom-2 w-0.5 timeline-spine -translate-x-1/2"></div>
+      <!-- 1. Background Spine Track (Dark static line) -->
+      <div class="absolute left-4 md:left-1/2 top-3 bottom-3 w-0.5 spine-track -translate-x-1/2"></div>
+      
+      <!-- 2. Active Spine Progress (Cyan laser filling with scroll) -->
+      <div id="spineProgress" class="absolute left-4 md:left-1/2 top-3 w-0.5 spine-progress -translate-x-1/2 h-0"></div>
 
       <div class="space-y-16">
 
         <!-- ========================================== -->
         <!-- 2026: LEFT SIDE (Year + 4 Projects)       -->
         <!-- ========================================== -->
-        <div class="relative">
+        <div class="relative" data-year="2026">
           
           <!-- Spine Year Node -->
-          <div class="absolute left-4 md:left-1/2 -translate-x-1/2 top-1.5 w-4 h-4 rounded-full bg-primary border-2 border-secondary shadow-[0_0_10px_rgba(100,255,218,0.5)] z-10 flex items-center justify-center">
-            <div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+          <div id="node-2026" class="spine-node absolute left-4 md:left-1/2 -translate-x-1/2 top-2.5 w-4 h-4 rounded-full bg-primary border-2 border-slate-700 z-20 flex items-center justify-center">
+            <div class="node-dot w-1.5 h-1.5 rounded-full bg-slate-600 transition-colors"></div>
           </div>
 
-          <!-- Desktop 2-column grid: Left has content, Right is empty -->
           <div class="md:grid md:grid-cols-2 md:gap-12 pl-10 md:pl-0">
-            
-            <!-- LEFT COLUMN: 2026 Year Header + Projects -->
+            <!-- LEFT COLUMN -->
             <div class="space-y-4 md:pr-4">
-              
-              <!-- Year Anchor -->
               <div class="mb-3">
                 <span class="text-2xl md:text-3xl font-bold text-secondary font-mono tracking-wider">2026</span>
                 <span class="text-xs text-slate-400 font-mono ml-2">Panic Playdate &amp; Android BLE</span>
               </div>
 
               <!-- 1. DeskWeather -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-deskweather" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2026')" onmouseleave="onCardLeave('2026')">
+                <div class="connector-line-left hidden md:block"></div>
                 <div class="flex items-center justify-between gap-2">
                   <span class="card-title font-bold text-white text-sm transition">DeskWeather</span>
-                  <a href="https://nikhilpatil12.itch.io/deskweather" target="_blank" rel="noopener noreferrer" class="text-xs text-secondary hover:underline font-mono inline-flex items-center gap-1 whitespace-nowrap">
+                  <a href="https://nikhilpatil12.itch.io/deskweather" target="_blank" class="text-xs text-slate-400 hover:text-secondary underline underline-offset-4 font-mono inline-flex items-center gap-1 whitespace-nowrap min-h-[36px]">
                     itch ↗
                   </a>
                 </div>
@@ -343,10 +343,11 @@
               </div>
 
               <!-- 2. HexaCrank -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-hexacrank" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2026')" onmouseleave="onCardLeave('2026')">
+                <div class="connector-line-left hidden md:block"></div>
                 <div class="flex items-center justify-between gap-2">
                   <span class="card-title font-bold text-white text-sm transition">HexaCrank</span>
-                  <a href="https://nikhilpatil12.itch.io/hexacrank" target="_blank" rel="noopener noreferrer" class="text-xs text-secondary hover:underline font-mono inline-flex items-center gap-1 whitespace-nowrap">
+                  <a href="https://nikhilpatil12.itch.io/hexacrank" target="_blank" class="text-xs text-slate-400 hover:text-secondary underline underline-offset-4 font-mono inline-flex items-center gap-1 whitespace-nowrap min-h-[36px]">
                     itch ↗
                   </a>
                 </div>
@@ -359,10 +360,11 @@
               </div>
 
               <!-- 3. Cranklish -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-cranklish" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2026')" onmouseleave="onCardLeave('2026')">
+                <div class="connector-line-left hidden md:block"></div>
                 <div class="flex items-center justify-between gap-2">
                   <span class="card-title font-bold text-white text-sm transition">Cranklish</span>
-                  <a href="https://nikhilpatil12.itch.io/cranklish" target="_blank" rel="noopener noreferrer" class="text-xs text-secondary hover:underline font-mono inline-flex items-center gap-1 whitespace-nowrap">
+                  <a href="https://nikhilpatil12.itch.io/cranklish" target="_blank" class="text-xs text-slate-400 hover:text-secondary underline underline-offset-4 font-mono inline-flex items-center gap-1 whitespace-nowrap min-h-[36px]">
                     itch ↗
                   </a>
                 </div>
@@ -375,10 +377,11 @@
               </div>
 
               <!-- 4. NotiMirror -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-notimirror" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2026')" onmouseleave="onCardLeave('2026')">
+                <div class="connector-line-left hidden md:block"></div>
                 <div class="flex items-center justify-between gap-2">
                   <span class="card-title font-bold text-white text-sm transition">NotiMirror</span>
-                  <a href="https://github.com/nikhilpatil12/notimirror" target="_blank" rel="noopener noreferrer" class="text-xs text-secondary hover:underline font-mono inline-flex items-center gap-1 whitespace-nowrap">
+                  <a href="https://github.com/nikhilpatil12/notimirror" target="_blank" class="text-xs text-slate-400 hover:text-secondary underline underline-offset-4 font-mono inline-flex items-center gap-1 whitespace-nowrap min-h-[36px]">
                     source ↗
                   </a>
                 </div>
@@ -389,12 +392,10 @@
                   Kotlin · Android 12+ · BLE · Apple ANCS
                 </div>
               </div>
-
             </div>
 
-            <!-- RIGHT COLUMN: Empty space on desktop for 2026 -->
+            <!-- RIGHT COLUMN: Empty on desktop for 2026 -->
             <div class="hidden md:block"></div>
-
           </div>
         </div>
 
@@ -402,42 +403,39 @@
         <!-- ========================================== -->
         <!-- 2025: RIGHT SIDE (Year + Blaze Feeds)      -->
         <!-- ========================================== -->
-        <div class="relative">
+        <div class="relative" data-year="2025">
           
           <!-- Spine Year Node -->
-          <div class="absolute left-4 md:left-1/2 -translate-x-1/2 top-1.5 w-4 h-4 rounded-full bg-primary border-2 border-secondary shadow-[0_0_10px_rgba(100,255,218,0.5)] z-10 flex items-center justify-center">
-            <div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+          <div id="node-2025" class="spine-node absolute left-4 md:left-1/2 -translate-x-1/2 top-2.5 w-4 h-4 rounded-full bg-primary border-2 border-slate-700 z-20 flex items-center justify-center">
+            <div class="node-dot w-1.5 h-1.5 rounded-full bg-slate-600 transition-colors"></div>
           </div>
 
-          <!-- Desktop 2-column grid: Left is empty, Right has content -->
           <div class="md:grid md:grid-cols-2 md:gap-12 pl-10 md:pl-0">
-            
             <!-- LEFT COLUMN: Empty on desktop for 2025 -->
             <div class="hidden md:block"></div>
 
-            <!-- RIGHT COLUMN: 2025 Year Header + Blaze Feeds -->
+            <!-- RIGHT COLUMN -->
             <div class="space-y-4 md:pl-4">
-              
-              <!-- Year Anchor -->
               <div class="mb-3">
                 <span class="text-2xl md:text-3xl font-bold text-secondary font-mono tracking-wider">2025</span>
                 <span class="text-xs text-slate-400 font-mono ml-2">Flagship Cross-Platform App</span>
               </div>
 
               <!-- 5. Blaze Feeds -->
-              <div class="p-4 rounded-lg bg-navy-light border border-secondary/40 card-glow">
+              <div id="card-blazefeeds" class="timeline-card p-4 rounded-lg bg-navy-light/90 border border-secondary/40" onmouseenter="onCardEnter('2025')" onmouseleave="onCardLeave('2025')">
+                <div class="connector-line-right hidden md:block"></div>
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <span class="card-title font-bold text-white text-base transition">Blaze Feeds</span>
                   <div class="flex flex-wrap items-center gap-2 text-xs font-mono">
-                    <a href="https://blazefeeds.nikpatil.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <a href="https://blazefeeds.nikpatil.com" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       landing ↗
                     </a>
-                    <span class="text-slate-600">·</span>
-                    <a href="https://apps.apple.com/in/app/blaze-feeds-smart-rss-reader/id6743965767" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <span class="text-slate-600 select-none">·</span>
+                    <a href="https://apps.apple.com/in/app/blaze-feeds-smart-rss-reader/id6743965767" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       app store ↗
                     </a>
-                    <span class="text-slate-600">·</span>
-                    <a href="https://play.google.com/store/apps/details?id=com.nikhil.blazefeeds&hl=en" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <span class="text-slate-600 select-none">·</span>
+                    <a href="https://play.google.com/store/apps/details?id=com.nikhil.blazefeeds&hl=en" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       play store ↗
                     </a>
                   </div>
@@ -449,9 +447,7 @@
                   Flutter · SQLite · Gemini API · RevenueCat
                 </div>
               </div>
-
             </div>
-
           </div>
         </div>
 
@@ -459,35 +455,32 @@
         <!-- ========================================== -->
         <!-- 2024: LEFT SIDE (Year + Joke Generator)    -->
         <!-- ========================================== -->
-        <div class="relative">
+        <div class="relative" data-year="2024">
           
           <!-- Spine Year Node -->
-          <div class="absolute left-4 md:left-1/2 -translate-x-1/2 top-1.5 w-4 h-4 rounded-full bg-primary border-2 border-secondary/70 z-10 flex items-center justify-center">
-            <div class="w-1.5 h-1.5 rounded-full bg-secondary/80"></div>
+          <div id="node-2024" class="spine-node absolute left-4 md:left-1/2 -translate-x-1/2 top-2.5 w-4 h-4 rounded-full bg-primary border-2 border-slate-700 z-20 flex items-center justify-center">
+            <div class="node-dot w-1.5 h-1.5 rounded-full bg-slate-600 transition-colors"></div>
           </div>
 
-          <!-- Desktop 2-column grid: Left has content, Right is empty -->
           <div class="md:grid md:grid-cols-2 md:gap-12 pl-10 md:pl-0">
-            
-            <!-- LEFT COLUMN: 2024 Year Header + Projects -->
+            <!-- LEFT COLUMN -->
             <div class="space-y-4 md:pr-4">
-              
-              <!-- Year Anchor -->
               <div class="mb-3">
                 <span class="text-2xl md:text-3xl font-bold text-secondary font-mono tracking-wider">2024</span>
                 <span class="text-xs text-slate-400 font-mono ml-2">Developer Tools &amp; APIs</span>
               </div>
 
               <!-- 6. Joke Generator API -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-jokegenerator" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2024')" onmouseleave="onCardLeave('2024')">
+                <div class="connector-line-left hidden md:block"></div>
                 <div class="flex items-center justify-between gap-3">
                   <span class="card-title font-bold text-white text-sm transition">Joke Generator API</span>
                   <div class="flex items-center gap-2 text-xs font-mono">
-                    <a href="https://github.com/nikhilpatil12/JokeGenerator" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <a href="https://github.com/nikhilpatil12/JokeGenerator" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       source ↗
                     </a>
-                    <span class="text-slate-600">·</span>
-                    <a href="https://jokerr.nikpatil.com/api/image" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <span class="text-slate-600 select-none">·</span>
+                    <a href="https://jokerr.nikpatil.com/api/image" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       demo ↗
                     </a>
                   </div>
@@ -499,12 +492,10 @@
                   Node.js · Express · Canvas
                 </div>
               </div>
-
             </div>
 
             <!-- RIGHT COLUMN: Empty on desktop for 2024 -->
             <div class="hidden md:block"></div>
-
           </div>
         </div>
 
@@ -512,38 +503,35 @@
         <!-- ========================================== -->
         <!-- 2023: RIGHT SIDE (Year + 5 Projects)       -->
         <!-- ========================================== -->
-        <div class="relative">
+        <div class="relative" data-year="2023">
           
           <!-- Spine Year Node -->
-          <div class="absolute left-4 md:left-1/2 -translate-x-1/2 top-1.5 w-4 h-4 rounded-full bg-primary border-2 border-secondary/70 z-10 flex items-center justify-center">
-            <div class="w-1.5 h-1.5 rounded-full bg-secondary/80"></div>
+          <div id="node-2023" class="spine-node absolute left-4 md:left-1/2 -translate-x-1/2 top-2.5 w-4 h-4 rounded-full bg-primary border-2 border-slate-700 z-20 flex items-center justify-center">
+            <div class="node-dot w-1.5 h-1.5 rounded-full bg-slate-600 transition-colors"></div>
           </div>
 
-          <!-- Desktop 2-column grid: Left is empty, Right has content -->
           <div class="md:grid md:grid-cols-2 md:gap-12 pl-10 md:pl-0">
-            
             <!-- LEFT COLUMN: Empty on desktop for 2023 -->
             <div class="hidden md:block"></div>
 
-            <!-- RIGHT COLUMN: 2023 Year Header + Projects -->
+            <!-- RIGHT COLUMN -->
             <div class="space-y-4 md:pl-4">
-              
-              <!-- Year Anchor -->
               <div class="mb-3">
                 <span class="text-2xl md:text-3xl font-bold text-secondary font-mono tracking-wider">2023</span>
                 <span class="text-xs text-slate-400 font-mono ml-2">Full-Stack, Vision &amp; Bots</span>
               </div>
 
               <!-- 7. Steam Library Viewer -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-steam" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2023')" onmouseleave="onCardLeave('2023')">
+                <div class="connector-line-right hidden md:block"></div>
                 <div class="flex items-center justify-between gap-3">
                   <span class="card-title font-bold text-white text-sm transition">Steam Library Viewer</span>
                   <div class="flex items-center gap-2 text-xs font-mono">
-                    <a href="https://github.com/nikhilpatil12/SteamLibraryViewer" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <a href="https://github.com/nikhilpatil12/SteamLibraryViewer" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       source ↗
                     </a>
-                    <span class="text-slate-600">·</span>
-                    <a href="https://steamapp.nikpatil.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <span class="text-slate-600 select-none">·</span>
+                    <a href="https://steamapp.nikpatil.com" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       demo ↗
                     </a>
                   </div>
@@ -557,10 +545,11 @@
               </div>
 
               <!-- 8. WifiVision -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-wifivision" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2023')" onmouseleave="onCardLeave('2023')">
+                <div class="connector-line-right hidden md:block"></div>
                 <div class="flex items-center justify-between gap-2">
                   <span class="card-title font-bold text-white text-sm transition">WifiVision</span>
-                  <span class="text-xs text-slate-500 font-mono select-none">private</span>
+                  <span class="text-xs text-slate-500 font-mono select-none min-h-[36px] inline-flex items-center p-1">private</span>
                 </div>
                 <p class="text-xs text-grey mt-1.5 leading-relaxed">
                   Real-time computer vision inference and object detection on Android using Google MLKit without AR frameworks.
@@ -571,15 +560,16 @@
               </div>
 
               <!-- 9. Twitter News Bot -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-twitter" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2023')" onmouseleave="onCardLeave('2023')">
+                <div class="connector-line-right hidden md:block"></div>
                 <div class="flex items-center justify-between gap-3">
                   <span class="card-title font-bold text-white text-sm transition">Twitter News Bot</span>
                   <div class="flex items-center gap-2 text-xs font-mono">
-                    <a href="https://github.com/nikhilpatil12/TwitterBot" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <a href="https://github.com/nikhilpatil12/TwitterBot" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       source ↗
                     </a>
-                    <span class="text-slate-600">·</span>
-                    <a href="https://twitter.com/iTechnoBot" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <span class="text-slate-600 select-none">·</span>
+                    <a href="https://twitter.com/iTechnoBot" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       live ↗
                     </a>
                   </div>
@@ -593,15 +583,16 @@
               </div>
 
               <!-- 10. Wikipedia Chatbot -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-wikichat" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2023')" onmouseleave="onCardLeave('2023')">
+                <div class="connector-line-right hidden md:block"></div>
                 <div class="flex items-center justify-between gap-3">
                   <span class="card-title font-bold text-white text-sm transition">Wikipedia Chatbot</span>
                   <div class="flex items-center gap-2 text-xs font-mono">
-                    <a href="https://github.com/nikhilpatil12/chatbot" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <a href="https://github.com/nikhilpatil12/chatbot" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       source ↗
                     </a>
-                    <span class="text-slate-600">·</span>
-                    <a href="https://wikichat.nikpatil.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <span class="text-slate-600 select-none">·</span>
+                    <a href="https://wikichat.nikpatil.com" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       demo ↗
                     </a>
                   </div>
@@ -615,15 +606,16 @@
               </div>
 
               <!-- 11. Weather Live -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-weather" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2023')" onmouseleave="onCardLeave('2023')">
+                <div class="connector-line-right hidden md:block"></div>
                 <div class="flex items-center justify-between gap-3">
                   <span class="card-title font-bold text-white text-sm transition">Weather Live</span>
                   <div class="flex items-center gap-2 text-xs font-mono">
-                    <a href="https://github.com/nikhilpatil12/weather-website" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <a href="https://github.com/nikhilpatil12/weather-website" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       source ↗
                     </a>
-                    <span class="text-slate-600">·</span>
-                    <a href="https://weather.nikpatil.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:underline whitespace-nowrap">
+                    <span class="text-slate-600 select-none">·</span>
+                    <a href="https://weather.nikpatil.com" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 whitespace-nowrap min-h-[36px] inline-flex items-center p-1">
                       demo ↗
                     </a>
                   </div>
@@ -635,9 +627,7 @@
                   React · Open-Meteo · Docker
                 </div>
               </div>
-
             </div>
-
           </div>
         </div>
 
@@ -645,30 +635,27 @@
         <!-- ========================================== -->
         <!-- 2022: LEFT SIDE (Year + Credit Card Model) -->
         <!-- ========================================== -->
-        <div class="relative">
+        <div class="relative" data-year="2022">
           
           <!-- Spine Year Node -->
-          <div class="absolute left-4 md:left-1/2 -translate-x-1/2 top-1.5 w-4 h-4 rounded-full bg-primary border-2 border-secondary/60 z-10 flex items-center justify-center">
-            <div class="w-1.5 h-1.5 rounded-full bg-secondary/70"></div>
+          <div id="node-2022" class="spine-node absolute left-4 md:left-1/2 -translate-x-1/2 top-2.5 w-4 h-4 rounded-full bg-primary border-2 border-slate-700 z-20 flex items-center justify-center">
+            <div class="node-dot w-1.5 h-1.5 rounded-full bg-slate-600 transition-colors"></div>
           </div>
 
-          <!-- Desktop 2-column grid: Left has content, Right is empty -->
           <div class="md:grid md:grid-cols-2 md:gap-12 pl-10 md:pl-0">
-            
-            <!-- LEFT COLUMN: 2022 Year Header + Projects -->
+            <!-- LEFT COLUMN -->
             <div class="space-y-4 md:pr-4">
-              
-              <!-- Year Anchor -->
               <div class="mb-3">
                 <span class="text-2xl md:text-3xl font-bold text-secondary font-mono tracking-wider">2022</span>
                 <span class="text-xs text-slate-400 font-mono ml-2">Machine Learning Classification</span>
               </div>
 
               <!-- 12. Credit Card Predictor -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-creditcard" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2022')" onmouseleave="onCardLeave('2022')">
+                <div class="connector-line-left hidden md:block"></div>
                 <div class="flex items-center justify-between gap-3">
                   <span class="card-title font-bold text-white text-sm transition">Credit Card Predictor</span>
-                  <a href="https://github.com/OrbelB/MLCreditCards" target="_blank" rel="noopener noreferrer" class="text-xs text-secondary hover:underline font-mono inline-flex items-center gap-1 whitespace-nowrap">
+                  <a href="https://github.com/OrbelB/MLCreditCards" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 font-mono inline-flex items-center gap-1 whitespace-nowrap min-h-[36px]">
                     source ↗
                   </a>
                 </div>
@@ -679,12 +666,10 @@
                   Python · XGBoost · TensorFlow
                 </div>
               </div>
-
             </div>
 
             <!-- RIGHT COLUMN: Empty on desktop for 2022 -->
             <div class="hidden md:block"></div>
-
           </div>
         </div>
 
@@ -692,33 +677,30 @@
         <!-- ========================================== -->
         <!-- 2020: RIGHT SIDE (Year + Drone Telemetry)  -->
         <!-- ========================================== -->
-        <div class="relative">
+        <div class="relative" data-year="2020">
           
           <!-- Spine Year Node -->
-          <div class="absolute left-4 md:left-1/2 -translate-x-1/2 top-1.5 w-4 h-4 rounded-full bg-primary border-2 border-secondary/60 z-10 flex items-center justify-center">
-            <div class="w-1.5 h-1.5 rounded-full bg-secondary/70"></div>
+          <div id="node-2020" class="spine-node absolute left-4 md:left-1/2 -translate-x-1/2 top-2.5 w-4 h-4 rounded-full bg-primary border-2 border-slate-700 z-20 flex items-center justify-center">
+            <div class="node-dot w-1.5 h-1.5 rounded-full bg-slate-600 transition-colors"></div>
           </div>
 
-          <!-- Desktop 2-column grid: Left is empty, Right has content -->
           <div class="md:grid md:grid-cols-2 md:gap-12 pl-10 md:pl-0">
-            
             <!-- LEFT COLUMN: Empty on desktop for 2020 -->
             <div class="hidden md:block"></div>
 
-            <!-- RIGHT COLUMN: 2020 Year Header + Projects -->
+            <!-- RIGHT COLUMN -->
             <div class="space-y-4 md:pl-4">
-              
-              <!-- Year Anchor -->
               <div class="mb-3">
                 <span class="text-2xl md:text-3xl font-bold text-secondary font-mono tracking-wider">2020</span>
                 <span class="text-xs text-slate-400 font-mono ml-2">Android &amp; Flight Controller</span>
               </div>
 
               <!-- 13. Delivery Drone Telemetry -->
-              <div class="p-4 rounded-lg bg-navy-light/80 border border-slate-800 card-glow">
+              <div id="card-drone" class="timeline-card p-4 rounded-lg bg-navy-light/80 border border-slate-800" onmouseenter="onCardEnter('2020')" onmouseleave="onCardLeave('2020')">
+                <div class="connector-line-right hidden md:block"></div>
                 <div class="flex items-center justify-between gap-3">
                   <span class="card-title font-bold text-white text-sm transition">Delivery Drone Telemetry</span>
-                  <a href="https://github.com/nikhilpatil12/MapsInAction" target="_blank" rel="noopener noreferrer" class="text-xs text-secondary hover:underline font-mono inline-flex items-center gap-1 whitespace-nowrap">
+                  <a href="https://github.com/nikhilpatil12/MapsInAction" target="_blank" class="text-slate-400 hover:text-secondary underline underline-offset-4 font-mono inline-flex items-center gap-1 whitespace-nowrap min-h-[36px]">
                     source ↗
                   </a>
                 </div>
@@ -729,9 +711,7 @@
                   Android SDK · Maps API · Raspberry Pi · MavLink
                 </div>
               </div>
-
             </div>
-
           </div>
         </div>
 

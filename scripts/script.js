@@ -131,9 +131,84 @@ function setupScrollspy() {
   });
 }
 
+function setupTimelineAnimation() {
+  const timelineContainer = document.getElementById("timelineContainer");
+  const spineProgress = document.getElementById("spineProgress");
+  if (!timelineContainer || !spineProgress) return;
+
+  const yearBlocks = Array.from(
+    document.querySelectorAll("#timelineContainer [data-year]")
+  );
+  const nodes = {
+    2026: document.getElementById("node-2026"),
+    2025: document.getElementById("node-2025"),
+    2024: document.getElementById("node-2024"),
+    2023: document.getElementById("node-2023"),
+    2022: document.getElementById("node-2022"),
+    2020: document.getElementById("node-2020"),
+  };
+
+  let ticking = false;
+  function updateSpine() {
+    ticking = false;
+    const rect = timelineContainer.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const triggerOffset = windowHeight * 0.65;
+    const start = rect.top;
+    const totalHeight = rect.height;
+
+    let progressPx = 0;
+    if (start < triggerOffset) {
+      progressPx = Math.min(totalHeight, triggerOffset - start);
+    }
+    spineProgress.style.height = `${progressPx}px`;
+
+    yearBlocks.forEach((block) => {
+      const year = block.getAttribute("data-year");
+      const node = nodes[year];
+      if (!node) return;
+      const nodeRect = node.getBoundingClientRect();
+      if (nodeRect.top <= triggerOffset + 20) {
+        node.classList.add("active");
+      } else {
+        node.classList.remove("active");
+      }
+    });
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(updateSpine);
+      ticking = true;
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", updateSpine);
+  updateSpine();
+
+  // Card hover circuit connectors: pulse that year's node
+  const cards = document.querySelectorAll("#timelineContainer .timeline-card");
+  cards.forEach((card) => {
+    const parentYearBlock = card.closest("[data-year]");
+    const year = parentYearBlock
+      ? parentYearBlock.getAttribute("data-year")
+      : null;
+    if (!year || !nodes[year]) return;
+
+    card.addEventListener("mouseenter", () => {
+      nodes[year].classList.add("highlight-pulse");
+    });
+    card.addEventListener("mouseleave", () => {
+      nodes[year].classList.remove("highlight-pulse");
+    });
+  });
+}
+
 function initUI() {
   setupNav();
   setupScrollspy();
+  setupTimelineAnimation();
 }
 
 // Run immediately since script is at bottom of body, and listen to DOMContentLoaded as fallback
