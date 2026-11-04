@@ -284,33 +284,29 @@ async function initThree() {
     updateGlobePlacement();
     scene.add(globeGroup);
 
-    // Lights
-    const ambientLight = new THREE.AmbientLight(0x0a192f, 2.4);
+    // Lights (Bright & Cheerful for Cartoon Aesthetic)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.DirectionalLight(0xffffff, 2.8);
-    sunLight.position.set(8, 6, 10);
+    const sunLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    sunLight.position.set(8, 7, 10);
     scene.add(sunLight);
 
-    const rimLight = new THREE.DirectionalLight(0x64ffda, 1.6);
-    rimLight.position.set(-8, -4, -6);
-    scene.add(rimLight);
+    const fillLight = new THREE.DirectionalLight(0x64ffda, 1.2);
+    fillLight.position.set(-8, -4, -6);
+    scene.add(fillLight);
 
-    // Earth Sphere
+    // Cartoon Earth Sphere
     const GLOBE_RADIUS = 2.0;
     const textureLoader = new THREE.TextureLoader();
-    const atmosTexture = textureLoader.load("./images/earth_atmos.jpg");
-    const lightsTexture = textureLoader.load("./images/earth_lights.png");
+    const cartoonTexture = textureLoader.load("./images/earth_cartoon.png");
+    cartoonTexture.colorSpace = THREE.SRGBColorSpace;
 
     const earthGeometry = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64);
     const earthMaterial = new THREE.MeshStandardMaterial({
-      map: atmosTexture,
-      roughness: 0.7,
-      metalness: 0.1,
-      emissiveMap: lightsTexture,
-      emissive: new THREE.Color(0x64ffda),
-      emissiveIntensity: 0.85,
-      color: 0x90b8d8,
+      map: cartoonTexture,
+      roughness: 0.55,
+      metalness: 0.05,
     });
     const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
     globeGroup.add(earthMesh);
@@ -331,10 +327,10 @@ async function initThree() {
       void main() {
         vec3 viewDir = normalize(-vPosition);
         float intensity = pow(0.68 - dot(vNormal, viewDir), 2.2);
-        gl_FragColor = vec4(0.39, 1.0, 0.85, 1.0) * intensity * 0.85;
+        gl_FragColor = vec4(0.39, 1.0, 0.85, 1.0) * intensity * 0.75;
       }
     `;
-    const atmosphereGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.055, 64, 64);
+    const atmosphereGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.05, 64, 64);
     const atmosphereMat = new THREE.ShaderMaterial({
       vertexShader: atmosphereVertexShader,
       fragmentShader: atmosphereFragmentShader,
@@ -380,217 +376,285 @@ async function initThree() {
     // Los Angeles, USA (34.0522° N, -118.2437° W)
     const posLA = latLonToVector3(34.0522, -118.2437, GLOBE_RADIUS);
 
-    // Text Sprite Label Helper
-    function makeTextSprite(message, subtext) {
-      const canvas = document.createElement("canvas");
-      canvas.width = 256;
-      canvas.height = 80;
-      const ctx = canvas.getContext("2d");
-
-      ctx.fillStyle = "rgba(10, 25, 47, 0.85)";
-      ctx.strokeStyle = "#64ffda";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.roundRect(4, 4, 248, 72, 8);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.font = "bold 24px monospace";
-      ctx.fillStyle = "#64ffda";
-      ctx.textAlign = "center";
-      ctx.fillText(message, 128, 36);
-
-      ctx.font = "16px monospace";
-      ctx.fillStyle = "#8892b0";
-      ctx.fillText(subtext, 128, 60);
-
-      const texture = new THREE.CanvasTexture(canvas);
-      const spriteMat = new THREE.SpriteMaterial({
-        map: texture,
-        transparent: true,
-      });
-      const sprite = new THREE.Sprite(spriteMat);
-      sprite.scale.set(0.65, 0.2, 1);
-      return sprite;
-    }
-
-    // Airport Markers & Radar Beacons
-    function createAirportMarker(position, color, labelText, coordsText) {
-      const markerGroup = new THREE.Group();
-      markerGroup.position.copy(position);
+    // Cute Cartoon Airport Markers (Pins & Runways)
+    function createCartoonAirport(position, pinColor, title, sub) {
+      const group = new THREE.Group();
+      group.position.copy(position);
 
       const normal = position.clone().normalize();
-      markerGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), normal);
+      group.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), normal);
 
-      const dotGeo = new THREE.SphereGeometry(0.04, 16, 16);
-      const dotMat = new THREE.MeshBasicMaterial({ color: color });
-      markerGroup.add(new THREE.Mesh(dotGeo, dotMat));
-
-      const beamGeo = new THREE.CylinderGeometry(0.006, 0.016, 0.38, 8);
-      beamGeo.translate(0, 0.19, 0);
-      const beamMat = new THREE.MeshBasicMaterial({
-        color: color,
-        transparent: true,
-        opacity: 0.75,
+      // Runway strip
+      const runwayGeo = new THREE.PlaneGeometry(0.12, 0.32);
+      runwayGeo.rotateX(-Math.PI / 2);
+      const runwayMat = new THREE.MeshBasicMaterial({
+        color: 0x1e293b,
+        side: THREE.DoubleSide,
       });
-      markerGroup.add(new THREE.Mesh(beamGeo, beamMat));
+      group.add(new THREE.Mesh(runwayGeo, runwayMat));
 
-      const ringGeo = new THREE.RingGeometry(0.025, 0.055, 32);
-      ringGeo.rotateX(-Math.PI / 2);
-      const ringMat = new THREE.MeshBasicMaterial({
-        color: color,
+      const dashGeo = new THREE.PlaneGeometry(0.012, 0.24);
+      dashGeo.rotateX(-Math.PI / 2);
+      const dashMat = new THREE.MeshBasicMaterial({
+        color: 0x64ffda,
+        side: THREE.DoubleSide,
+      });
+      group.add(new THREE.Mesh(dashGeo, dashMat));
+
+      // 3D Cartoon Pin Head
+      const pinHeadGeo = new THREE.SphereGeometry(0.05, 16, 16);
+      pinHeadGeo.translate(0, 0.28, 0);
+      const pinHeadMat = new THREE.MeshStandardMaterial({
+        color: pinColor,
+        roughness: 0.3,
+        metalness: 0.1,
+      });
+      group.add(new THREE.Mesh(pinHeadGeo, pinHeadMat));
+
+      // Pin Needle
+      const needleGeo = new THREE.CylinderGeometry(0.006, 0.016, 0.26, 8);
+      needleGeo.translate(0, 0.13, 0);
+      const needleMat = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        metalness: 0.8,
+        roughness: 0.2,
+      });
+      group.add(new THREE.Mesh(needleGeo, needleMat));
+
+      // Radar Ripple
+      const rippleGeo = new THREE.RingGeometry(0.03, 0.065, 32);
+      rippleGeo.rotateX(-Math.PI / 2);
+      const rippleMat = new THREE.MeshBasicMaterial({
+        color: 0x64ffda,
         transparent: true,
         opacity: 0.9,
         side: THREE.DoubleSide,
       });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      markerGroup.add(ring);
+      const ripple = new THREE.Mesh(rippleGeo, rippleMat);
+      group.add(ripple);
 
-      const label = makeTextSprite(labelText, coordsText);
-      label.position.set(0, 0.48, 0);
-      markerGroup.add(label);
+      // Cute Text Badge
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 72;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "rgba(10, 25, 47, 0.88)";
+      ctx.strokeStyle = "#64ffda";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 248, 64, 10);
+      ctx.fill();
+      ctx.stroke();
 
-      globeGroup.add(markerGroup);
-      return { ring, ringMat, markerGroup };
+      ctx.font = "bold 24px monospace";
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.fillText(title, 128, 34);
+      ctx.font = "15px monospace";
+      ctx.fillStyle = "#64ffda";
+      ctx.fillText(sub, 128, 56);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      const sprite = new THREE.Sprite(
+        new THREE.SpriteMaterial({ map: texture, transparent: true })
+      );
+      sprite.scale.set(0.65, 0.18, 1);
+      sprite.position.set(0, 0.42, 0);
+      group.add(sprite);
+
+      globeGroup.add(group);
+      return { ripple, rippleMat };
     }
 
-    const markerRatnagiri = createAirportMarker(
+    const airportRatnagiri = createCartoonAirport(
       posRatnagiri,
-      0x64ffda,
+      0xff5c5c,
       "RATNAGIRI",
       "16.99°N 73.31°E"
     );
-    const markerLA = createAirportMarker(
+    const airportLA = createCartoonAirport(
       posLA,
-      0x64ffda,
+      0x38bdf8,
       "LOS ANGELES",
       "34.05°N 118.24°W"
     );
 
-    // Great Circle Flight Trajectory Arc
-    const flightPoints = [];
-    const NUM_SEGMENTS = 140;
-    const MAX_ALTITUDE = GLOBE_RADIUS * 0.45;
+    // Realistic Glideslope & Flight Curve
+    function getFlightAltitude(s) {
+      const MAX_ALTITUDE = GLOBE_RADIUS * 0.38;
+      if (s < 0.02) return 0.005;
+      if (s > 0.98) return 0.005;
 
+      const normalizedS = (s - 0.02) / (0.98 - 0.02);
+      const sineAlt = Math.sin(normalizedS * Math.PI);
+      return Math.pow(sineAlt, 0.85) * MAX_ALTITUDE;
+    }
+
+    const flightPoints = [];
+    const NUM_SEGMENTS = 160;
     for (let i = 0; i <= NUM_SEGMENTS; i++) {
-      const t = i / NUM_SEGMENTS;
-      const p = new THREE.Vector3().copy(posRatnagiri).lerp(posLA, t).normalize();
-      const alt = Math.sin(t * Math.PI) * MAX_ALTITUDE;
+      const s = i / NUM_SEGMENTS;
+      const p = new THREE.Vector3().copy(posRatnagiri).lerp(posLA, s).normalize();
+      const alt = getFlightAltitude(s);
       p.multiplyScalar(GLOBE_RADIUS + alt);
       flightPoints.push(p);
     }
-
     const flightCurve = new THREE.CatmullRomCurve3(flightPoints);
 
-    const curvePoints = flightCurve.getPoints(180);
+    const curvePoints = flightCurve.getPoints(200);
     const flightPathGeo = new THREE.BufferGeometry().setFromPoints(curvePoints);
     const flightPathMat = new THREE.LineDashedMaterial({
       color: 0x64ffda,
       linewidth: 2,
       scale: 1,
-      dashSize: 0.14,
-      gapSize: 0.07,
+      dashSize: 0.12,
+      gapSize: 0.06,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.7,
     });
     const flightPathLine = new THREE.Line(flightPathGeo, flightPathMat);
     flightPathLine.computeLineDistances();
     globeGroup.add(flightPathLine);
 
-    // 3D Supersonic Jet Aircraft
-    function createAirplane() {
+    // Cute Chubby Cartoon Commercial Airliner
+    function createCartoonAirplane() {
       const plane = new THREE.Group();
-      const bodyMat = new THREE.MeshStandardMaterial({
-        color: 0xf1f5f9,
-        metalness: 0.85,
-        roughness: 0.2,
-      });
-      const darkMat = new THREE.MeshStandardMaterial({
-        color: 0x0f172a,
-        metalness: 0.9,
+
+      const whiteMat = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
         roughness: 0.3,
+        metalness: 0.05,
       });
-      const cyanGlowMat = new THREE.MeshBasicMaterial({ color: 0x64ffda });
+      const cyanMat = new THREE.MeshStandardMaterial({
+        color: 0x64ffda,
+        roughness: 0.35,
+        metalness: 0.1,
+      });
+      const darkGlassMat = new THREE.MeshStandardMaterial({
+        color: 0x0f172a,
+        roughness: 0.2,
+        metalness: 0.8,
+      });
+      const engineIntakeMat = new THREE.MeshBasicMaterial({ color: 0x020617 });
+      const glowMat = new THREE.MeshBasicMaterial({ color: 0x64ffda });
 
-      const fuselageGeo = new THREE.ConeGeometry(0.042, 0.28, 14);
-      fuselageGeo.rotateX(Math.PI / 2);
-      plane.add(new THREE.Mesh(fuselageGeo, bodyMat));
+      // Fuselage: Chubby rounded body
+      const bodyGeo = new THREE.CylinderGeometry(0.045, 0.045, 0.26, 16);
+      bodyGeo.rotateX(Math.PI / 2);
+      plane.add(new THREE.Mesh(bodyGeo, whiteMat));
 
-      const canopyGeo = new THREE.BoxGeometry(0.026, 0.022, 0.09);
-      canopyGeo.translate(0, 0.024, 0.02);
-      plane.add(new THREE.Mesh(canopyGeo, darkMat));
+      // Cute rounded nose cone
+      const noseGeo = new THREE.SphereGeometry(0.045, 16, 16);
+      noseGeo.scale(1, 0.95, 1.4);
+      noseGeo.translate(0, 0, 0.13);
+      plane.add(new THREE.Mesh(noseGeo, whiteMat));
 
+      // Tail cone
+      const tailConeGeo = new THREE.ConeGeometry(0.045, 0.11, 16);
+      tailConeGeo.rotateX(-Math.PI / 2);
+      tailConeGeo.translate(0, 0.005, -0.18);
+      plane.add(new THREE.Mesh(tailConeGeo, whiteMat));
+
+      // Cheatline stripe (cyan band running down the fuselage)
+      const stripeGeo = new THREE.CylinderGeometry(0.046, 0.046, 0.24, 16);
+      stripeGeo.rotateX(Math.PI / 2);
+      const stripe = new THREE.Mesh(stripeGeo, cyanMat);
+      stripe.scale.set(1.01, 0.18, 1);
+      plane.add(stripe);
+
+      // Cockpit windshield
+      const cockpitGeo = new THREE.SphereGeometry(0.046, 12, 12);
+      cockpitGeo.scale(0.85, 0.6, 1.2);
+      cockpitGeo.translate(0, 0.018, 0.12);
+      plane.add(new THREE.Mesh(cockpitGeo, darkGlassMat));
+
+      // Cute rounded wings
       const wingShape = new THREE.Shape();
-      wingShape.moveTo(0, 0.07);
-      wingShape.lineTo(0.26, -0.07);
-      wingShape.lineTo(0.24, -0.1);
-      wingShape.lineTo(0, -0.05);
-      wingShape.lineTo(-0.24, -0.1);
-      wingShape.lineTo(-0.26, -0.07);
+      wingShape.moveTo(0, 0.06);
+      wingShape.lineTo(0.24, -0.04);
+      wingShape.lineTo(0.22, -0.07);
+      wingShape.lineTo(0, -0.03);
+      wingShape.lineTo(-0.22, -0.07);
+      wingShape.lineTo(-0.24, -0.04);
       wingShape.closePath();
 
       const wingGeo = new THREE.ExtrudeGeometry(wingShape, {
+        depth: 0.006,
+        bevelEnabled: true,
+        bevelSegments: 2,
+        bevelSize: 0.002,
+        bevelThickness: 0.002,
+      });
+      wingGeo.rotateX(-Math.PI / 2);
+      wingGeo.translate(0, -0.006, 0);
+      plane.add(new THREE.Mesh(wingGeo, whiteMat));
+
+      // Vertical Tail Fin
+      const finShape = new THREE.Shape();
+      finShape.moveTo(0, -0.04);
+      finShape.lineTo(0, 0.09);
+      finShape.lineTo(-0.07, 0.09);
+      finShape.lineTo(-0.04, -0.04);
+      finShape.closePath();
+
+      const finGeo = new THREE.ExtrudeGeometry(finShape, {
         depth: 0.005,
         bevelEnabled: false,
       });
-      wingGeo.rotateX(-Math.PI / 2);
-      wingGeo.translate(0, 0.004, -0.01);
-      plane.add(new THREE.Mesh(wingGeo, bodyMat));
-
-      const tailFinShape = new THREE.Shape();
-      tailFinShape.moveTo(0, -0.05);
-      tailFinShape.lineTo(0, 0.09);
-      tailFinShape.lineTo(-0.07, 0.09);
-      tailFinShape.lineTo(-0.05, -0.05);
-      tailFinShape.closePath();
-
-      const finGeo = new THREE.ExtrudeGeometry(tailFinShape, {
-        depth: 0.004,
-        bevelEnabled: false,
-      });
       finGeo.rotateY(Math.PI / 2);
-      finGeo.translate(0, 0.016, -0.12);
-      plane.add(new THREE.Mesh(finGeo, bodyMat));
+      finGeo.translate(0, 0.02, -0.16);
+      plane.add(new THREE.Mesh(finGeo, cyanMat));
 
-      const hStabGeo = new THREE.BoxGeometry(0.13, 0.004, 0.045);
-      hStabGeo.translate(0, 0.022, -0.12);
-      plane.add(new THREE.Mesh(hStabGeo, bodyMat));
+      // Horizontal Stabilizers
+      const hStabGeo = new THREE.BoxGeometry(0.12, 0.004, 0.038);
+      hStabGeo.translate(0, 0.022, -0.17);
+      plane.add(new THREE.Mesh(hStabGeo, whiteMat));
 
-      [-0.072, 0.072].forEach((x) => {
-        const engineGeo = new THREE.CylinderGeometry(0.013, 0.013, 0.08, 10);
-        engineGeo.rotateX(Math.PI / 2);
-        engineGeo.translate(x, -0.014, -0.02);
-        plane.add(new THREE.Mesh(engineGeo, darkMat));
+      // Twin Jet Engines
+      [-0.075, 0.075].forEach((x) => {
+        const engineGroup = new THREE.Group();
+        engineGroup.position.set(x, -0.022, 0);
 
-        const exhaustGeo = new THREE.CircleGeometry(0.011, 8);
-        exhaustGeo.translate(x, -0.014, -0.061);
-        plane.add(new THREE.Mesh(exhaustGeo, cyanGlowMat));
+        const podGeo = new THREE.CylinderGeometry(0.016, 0.016, 0.085, 12);
+        podGeo.rotateX(Math.PI / 2);
+        engineGroup.add(new THREE.Mesh(podGeo, whiteMat));
+
+        const intakeGeo = new THREE.CircleGeometry(0.014, 12);
+        intakeGeo.translate(0, 0, 0.043);
+        engineGroup.add(new THREE.Mesh(intakeGeo, engineIntakeMat));
+
+        const exhaustGeo = new THREE.CircleGeometry(0.013, 12);
+        exhaustGeo.translate(0, 0, -0.043);
+        engineGroup.add(new THREE.Mesh(exhaustGeo, glowMat));
+
+        plane.add(engineGroup);
       });
 
+      // Wingtip lights
       const lightGeo = new THREE.SphereGeometry(0.008, 8, 8);
       const portLight = new THREE.Mesh(
         lightGeo,
         new THREE.MeshBasicMaterial({ color: 0xff3b30 })
       );
-      portLight.position.set(-0.25, 0, -0.08);
+      portLight.position.set(-0.23, 0, -0.05);
       plane.add(portLight);
 
       const stbdLight = new THREE.Mesh(
         lightGeo,
         new THREE.MeshBasicMaterial({ color: 0x34c759 })
       );
-      stbdLight.position.set(0.25, 0, -0.08);
+      stbdLight.position.set(0.23, 0, -0.05);
       plane.add(stbdLight);
 
-      plane.scale.set(0.95, 0.95, 0.95);
+      plane.scale.set(0.9, 0.9, 0.9);
       return plane;
     }
 
-    const airplane = createAirplane();
+    const airplane = createCartoonAirplane();
     globeGroup.add(airplane);
 
     // Contrail Ribbon
-    const CONTRAIL_LENGTH = 35;
+    const CONTRAIL_LENGTH = 32;
     const contrailGeo = new THREE.BufferGeometry();
     const contrailPositions = new Float32Array(CONTRAIL_LENGTH * 3);
     contrailGeo.setAttribute(
@@ -600,17 +664,17 @@ async function initThree() {
     const contrailMat = new THREE.LineBasicMaterial({
       color: 0x64ffda,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.55,
     });
     const contrailLine = new THREE.Line(contrailGeo, contrailMat);
     globeGroup.add(contrailLine);
     const contrailHistory = [];
 
-    // Flight Animation State
+    // Flight Animation State (Graceful & Slower)
     let flightProgress = 0.0;
     let flightDirection = 1;
     let pauseTimer = 0;
-    const FLIGHT_SPEED = 0.0016;
+    const FLIGHT_SPEED = 0.0008; // ~22 seconds per transit
 
     const Y_RATNAGIRI = -2.85;
     const Y_LA = 0.49;
@@ -690,14 +754,14 @@ async function initThree() {
       mouseCircle.position.copy(currentPosition);
 
       // Radar ripples
-      const rippleScale = ((time * 1.6) % 2.5) + 1.0;
+      const rippleScale = ((time * 1.5) % 2.5) + 1.0;
       const rippleOpacity = Math.max(0, 1.0 - (rippleScale - 1.0) / 1.5);
-      markerRatnagiri.ring.scale.set(rippleScale, rippleScale, 1);
-      markerRatnagiri.ringMat.opacity = rippleOpacity;
-      markerLA.ring.scale.set(rippleScale, rippleScale, 1);
-      markerLA.ringMat.opacity = rippleOpacity;
+      airportRatnagiri.ripple.scale.set(rippleScale, rippleScale, 1);
+      airportRatnagiri.rippleMat.opacity = rippleOpacity;
+      airportLA.ripple.scale.set(rippleScale, rippleScale, 1);
+      airportLA.rippleMat.opacity = rippleOpacity;
 
-      // Flight progress
+      // Flight progress (Graceful, majestic pacing)
       if (pauseTimer > 0) {
         pauseTimer -= delta;
         if (pauseTimer <= 0) {
@@ -707,19 +771,20 @@ async function initThree() {
         flightProgress += FLIGHT_SPEED * flightDirection;
         if (flightProgress >= 1.0) {
           flightProgress = 1.0;
-          pauseTimer = 2.2;
+          pauseTimer = 3.0; // 3-second gate layover
         } else if (flightProgress <= 0.0) {
           flightProgress = 0.0;
-          pauseTimer = 2.2;
+          pauseTimer = 3.0;
         }
       }
 
       // Airplane positioning along Great Circle curve
-      const currentPos = flightCurve.getPointAt(flightProgress);
+      const s = flightProgress;
+      const currentPos = flightCurve.getPointAt(s);
       airplane.position.copy(currentPos);
 
-      const deltaT = 0.004 * (flightDirection >= 0 ? 1 : -1);
-      const nextT = Math.max(0, Math.min(1, flightProgress + deltaT));
+      const deltaT = 0.003 * (flightDirection >= 0 ? 1 : -1);
+      const nextT = Math.max(0, Math.min(1, s + deltaT));
       const nextPos = flightCurve.getPointAt(nextT);
       const tangent = nextPos.clone().sub(currentPos).normalize();
 
@@ -730,15 +795,38 @@ async function initThree() {
         matrix.lookAt(currentPos, lookTarget, upVec);
         airplane.quaternion.setFromRotationMatrix(matrix);
 
+        // Smooth Glideslope & Realistic Landing Flare:
+        // Takeoff: nose pitches up ~10 degrees
+        // Final approach: nose flares UP ~12 degrees into runway touchdown (prevents nose diving)
+        let flarePitch = 0;
+        if (flightDirection === 1) { // Flying to LA
+          if (s < 0.12) {
+            flarePitch = (1.0 - (s / 0.12)) * 0.18; // Nose up ~10 deg climb
+          } else if (s > 0.88 && s < 0.98) {
+            const flareFactor = Math.sin(((s - 0.88) / 0.10) * Math.PI);
+            flarePitch = flareFactor * 0.22; // Nose flared UP ~12 deg
+          }
+        } else { // Flying to Ratnagiri
+          if (s > 0.88) {
+            flarePitch = ((s - 0.88) / 0.12) * 0.18;
+          } else if (s < 0.12 && s > 0.02) {
+            const flareFactor = Math.sin(((0.12 - s) / 0.10) * Math.PI);
+            flarePitch = flareFactor * 0.22;
+          }
+        }
+        airplane.rotateX(flarePitch);
+
+        // Gentle banking into flight curve
         const bankAngle =
-          Math.sin(flightProgress * Math.PI) *
-          0.22 *
+          Math.sin(s * Math.PI) *
+          0.16 *
           (flightDirection >= 0 ? 1 : -1);
         airplane.rotateZ(bankAngle);
       }
 
-      // Contrail update
-      if (pauseTimer <= 0) {
+      // Contrail smoke (only emitted when cruising above runway level)
+      const currentAlt = getFlightAltitude(s);
+      if (pauseTimer <= 0 && currentAlt > 0.03) {
         contrailHistory.unshift(currentPos.clone());
         if (contrailHistory.length > CONTRAIL_LENGTH) contrailHistory.pop();
         const posAttr = contrailGeo.attributes.position;
