@@ -230,7 +230,7 @@ if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initUI);
 }
 
-// --- Three.js Background & Interactive Animation ---
+// --- Three.js 3D Earth Globe & Flight Telemetry ---
 async function initThree() {
   const canvasContainer = document.getElementById("canvas-container");
   if (!canvasContainer) return;
@@ -239,20 +239,24 @@ async function initThree() {
     const THREE = await import("three");
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      75,
+      45,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-    camera.position.z = 5;
+    camera.position.set(0, 1.2, 5.8);
 
     const canvasbg = document.createElement("canvas");
     canvasbg.setAttribute("id", "canvasbg");
     const rendererbg = new THREE.WebGLRenderer({
       canvas: canvasbg,
       antialias: true,
+      alpha: true,
     });
     rendererbg.setSize(window.innerWidth, window.innerHeight);
+    rendererbg.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    rendererbg.toneMapping = THREE.ACESFilmicToneMapping;
+    rendererbg.toneMappingExposure = 1.25;
     canvasContainer.appendChild(rendererbg.domElement);
 
     const canvasfront = document.createElement("canvas");
@@ -263,35 +267,355 @@ async function initThree() {
       alpha: true,
     });
     rendererfront.setSize(window.innerWidth, window.innerHeight);
+    rendererfront.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     canvasContainer.appendChild(rendererfront.domElement);
 
-    const planeGeometry = new THREE.PlaneGeometry(200, 400);
-    const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x0a192f });
-    const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
-    planeMesh.position.z -= 50;
-    scene.add(planeMesh);
+    // Group for the Earth globe system
+    const globeGroup = new THREE.Group();
+    function updateGlobePlacement() {
+      if (window.innerWidth >= 992) {
+        globeGroup.position.set(1.05, -0.1, 0);
+        globeGroup.scale.set(1.0, 1.0, 1.0);
+      } else {
+        globeGroup.position.set(0, -0.55, -0.4);
+        globeGroup.scale.set(0.82, 0.82, 0.82);
+      }
+    }
+    updateGlobePlacement();
+    scene.add(globeGroup);
 
-    const planetGeometry = new THREE.IcosahedronGeometry(2, 2);
-    const planetMaterial = new THREE.MeshPhongMaterial({
-      color: 0x64ffda,
-      specular: 0x000000,
-      shininess: 5,
-      wireframe: true,
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0x0a192f, 2.4);
+    scene.add(ambientLight);
+
+    const sunLight = new THREE.DirectionalLight(0xffffff, 2.8);
+    sunLight.position.set(8, 6, 10);
+    scene.add(sunLight);
+
+    const rimLight = new THREE.DirectionalLight(0x64ffda, 1.6);
+    rimLight.position.set(-8, -4, -6);
+    scene.add(rimLight);
+
+    // Earth Sphere
+    const GLOBE_RADIUS = 2.0;
+    const textureLoader = new THREE.TextureLoader();
+    const atmosTexture = textureLoader.load("./images/earth_atmos.jpg");
+    const lightsTexture = textureLoader.load("./images/earth_lights.png");
+
+    const earthGeometry = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64);
+    const earthMaterial = new THREE.MeshStandardMaterial({
+      map: atmosTexture,
+      roughness: 0.7,
+      metalness: 0.1,
+      emissiveMap: lightsTexture,
+      emissive: new THREE.Color(0x64ffda),
+      emissiveIntensity: 0.85,
+      color: 0x90b8d8,
     });
-    const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
-    scene.add(planetMesh);
+    const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
+    globeGroup.add(earthMesh);
 
-    const directionallight = new THREE.DirectionalLight(0x000, 1);
-    directionallight.position.set(10, -10, 0);
-    scene.add(directionallight);
+    // Cyan Fresnel Atmosphere Glow
+    const atmosphereVertexShader = `
+      varying vec3 vNormal;
+      varying vec3 vPosition;
+      void main() {
+        vNormal = normalize(normalMatrix * normal);
+        vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `;
+    const atmosphereFragmentShader = `
+      varying vec3 vNormal;
+      varying vec3 vPosition;
+      void main() {
+        vec3 viewDir = normalize(-vPosition);
+        float intensity = pow(0.68 - dot(vNormal, viewDir), 2.2);
+        gl_FragColor = vec4(0.39, 1.0, 0.85, 1.0) * intensity * 0.85;
+      }
+    `;
+    const atmosphereGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.055, 64, 64);
+    const atmosphereMat = new THREE.ShaderMaterial({
+      vertexShader: atmosphereVertexShader,
+      fragmentShader: atmosphereFragmentShader,
+      blending: THREE.AdditiveBlending,
+      side: THREE.BackSide,
+      transparent: true,
+    });
+    globeGroup.add(new THREE.Mesh(atmosphereGeo, atmosphereMat));
 
-    const directionallight2 = new THREE.DirectionalLight(0x000, 1);
-    directionallight2.position.set(10, 10, 0);
-    scene.add(directionallight2);
+    // Graticule Lines (Latitude & Longitude)
+    const graticuleMat = new THREE.LineBasicMaterial({
+      color: 0x64ffda,
+      transparent: true,
+      opacity: 0.07,
+    });
+    for (let lat = -60; lat <= 60; lat += 30) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const r = GLOBE_RADIUS * 1.002 * Math.sin(phi);
+      const y = GLOBE_RADIUS * 1.002 * Math.cos(phi);
+      const circleGeo = new THREE.BufferGeometry();
+      const pts = [];
+      for (let i = 0; i <= 64; i++) {
+        const theta = (i / 64) * Math.PI * 2;
+        pts.push(new THREE.Vector3(r * Math.cos(theta), y, r * Math.sin(theta)));
+      }
+      circleGeo.setFromPoints(pts);
+      globeGroup.add(new THREE.Line(circleGeo, graticuleMat));
+    }
 
-    const ambientlight = new THREE.AmbientLight(0xffffff, 0.99);
-    scene.add(ambientlight);
+    // Helper: Lat/Lon (deg) to 3D Cartesian
+    function latLonToVector3(lat, lon, radius) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lon + 180) * (Math.PI / 180);
+      return new THREE.Vector3(
+        -radius * Math.sin(phi) * Math.cos(theta),
+        radius * Math.cos(phi),
+        radius * Math.sin(phi) * Math.sin(theta)
+      );
+    }
 
+    // Ratnagiri, India (16.9902° N, 73.3120° E)
+    const posRatnagiri = latLonToVector3(16.9902, 73.312, GLOBE_RADIUS);
+    // Los Angeles, USA (34.0522° N, -118.2437° W)
+    const posLA = latLonToVector3(34.0522, -118.2437, GLOBE_RADIUS);
+
+    // Text Sprite Label Helper
+    function makeTextSprite(message, subtext) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 80;
+      const ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "rgba(10, 25, 47, 0.85)";
+      ctx.strokeStyle = "#64ffda";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(4, 4, 248, 72, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = "bold 24px monospace";
+      ctx.fillStyle = "#64ffda";
+      ctx.textAlign = "center";
+      ctx.fillText(message, 128, 36);
+
+      ctx.font = "16px monospace";
+      ctx.fillStyle = "#8892b0";
+      ctx.fillText(subtext, 128, 60);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      const spriteMat = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+      });
+      const sprite = new THREE.Sprite(spriteMat);
+      sprite.scale.set(0.65, 0.2, 1);
+      return sprite;
+    }
+
+    // Airport Markers & Radar Beacons
+    function createAirportMarker(position, color, labelText, coordsText) {
+      const markerGroup = new THREE.Group();
+      markerGroup.position.copy(position);
+
+      const normal = position.clone().normalize();
+      markerGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), normal);
+
+      const dotGeo = new THREE.SphereGeometry(0.04, 16, 16);
+      const dotMat = new THREE.MeshBasicMaterial({ color: color });
+      markerGroup.add(new THREE.Mesh(dotGeo, dotMat));
+
+      const beamGeo = new THREE.CylinderGeometry(0.006, 0.016, 0.38, 8);
+      beamGeo.translate(0, 0.19, 0);
+      const beamMat = new THREE.MeshBasicMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.75,
+      });
+      markerGroup.add(new THREE.Mesh(beamGeo, beamMat));
+
+      const ringGeo = new THREE.RingGeometry(0.025, 0.055, 32);
+      ringGeo.rotateX(-Math.PI / 2);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.9,
+        side: THREE.DoubleSide,
+      });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      markerGroup.add(ring);
+
+      const label = makeTextSprite(labelText, coordsText);
+      label.position.set(0, 0.48, 0);
+      markerGroup.add(label);
+
+      globeGroup.add(markerGroup);
+      return { ring, ringMat, markerGroup };
+    }
+
+    const markerRatnagiri = createAirportMarker(
+      posRatnagiri,
+      0x64ffda,
+      "RATNAGIRI",
+      "16.99°N 73.31°E"
+    );
+    const markerLA = createAirportMarker(
+      posLA,
+      0x64ffda,
+      "LOS ANGELES",
+      "34.05°N 118.24°W"
+    );
+
+    // Great Circle Flight Trajectory Arc
+    const flightPoints = [];
+    const NUM_SEGMENTS = 140;
+    const MAX_ALTITUDE = GLOBE_RADIUS * 0.45;
+
+    for (let i = 0; i <= NUM_SEGMENTS; i++) {
+      const t = i / NUM_SEGMENTS;
+      const p = new THREE.Vector3().copy(posRatnagiri).lerp(posLA, t).normalize();
+      const alt = Math.sin(t * Math.PI) * MAX_ALTITUDE;
+      p.multiplyScalar(GLOBE_RADIUS + alt);
+      flightPoints.push(p);
+    }
+
+    const flightCurve = new THREE.CatmullRomCurve3(flightPoints);
+
+    const curvePoints = flightCurve.getPoints(180);
+    const flightPathGeo = new THREE.BufferGeometry().setFromPoints(curvePoints);
+    const flightPathMat = new THREE.LineDashedMaterial({
+      color: 0x64ffda,
+      linewidth: 2,
+      scale: 1,
+      dashSize: 0.14,
+      gapSize: 0.07,
+      transparent: true,
+      opacity: 0.75,
+    });
+    const flightPathLine = new THREE.Line(flightPathGeo, flightPathMat);
+    flightPathLine.computeLineDistances();
+    globeGroup.add(flightPathLine);
+
+    // 3D Supersonic Jet Aircraft
+    function createAirplane() {
+      const plane = new THREE.Group();
+      const bodyMat = new THREE.MeshStandardMaterial({
+        color: 0xf1f5f9,
+        metalness: 0.85,
+        roughness: 0.2,
+      });
+      const darkMat = new THREE.MeshStandardMaterial({
+        color: 0x0f172a,
+        metalness: 0.9,
+        roughness: 0.3,
+      });
+      const cyanGlowMat = new THREE.MeshBasicMaterial({ color: 0x64ffda });
+
+      const fuselageGeo = new THREE.ConeGeometry(0.042, 0.28, 14);
+      fuselageGeo.rotateX(Math.PI / 2);
+      plane.add(new THREE.Mesh(fuselageGeo, bodyMat));
+
+      const canopyGeo = new THREE.BoxGeometry(0.026, 0.022, 0.09);
+      canopyGeo.translate(0, 0.024, 0.02);
+      plane.add(new THREE.Mesh(canopyGeo, darkMat));
+
+      const wingShape = new THREE.Shape();
+      wingShape.moveTo(0, 0.07);
+      wingShape.lineTo(0.26, -0.07);
+      wingShape.lineTo(0.24, -0.1);
+      wingShape.lineTo(0, -0.05);
+      wingShape.lineTo(-0.24, -0.1);
+      wingShape.lineTo(-0.26, -0.07);
+      wingShape.closePath();
+
+      const wingGeo = new THREE.ExtrudeGeometry(wingShape, {
+        depth: 0.005,
+        bevelEnabled: false,
+      });
+      wingGeo.rotateX(-Math.PI / 2);
+      wingGeo.translate(0, 0.004, -0.01);
+      plane.add(new THREE.Mesh(wingGeo, bodyMat));
+
+      const tailFinShape = new THREE.Shape();
+      tailFinShape.moveTo(0, -0.05);
+      tailFinShape.lineTo(0, 0.09);
+      tailFinShape.lineTo(-0.07, 0.09);
+      tailFinShape.lineTo(-0.05, -0.05);
+      tailFinShape.closePath();
+
+      const finGeo = new THREE.ExtrudeGeometry(tailFinShape, {
+        depth: 0.004,
+        bevelEnabled: false,
+      });
+      finGeo.rotateY(Math.PI / 2);
+      finGeo.translate(0, 0.016, -0.12);
+      plane.add(new THREE.Mesh(finGeo, bodyMat));
+
+      const hStabGeo = new THREE.BoxGeometry(0.13, 0.004, 0.045);
+      hStabGeo.translate(0, 0.022, -0.12);
+      plane.add(new THREE.Mesh(hStabGeo, bodyMat));
+
+      [-0.072, 0.072].forEach((x) => {
+        const engineGeo = new THREE.CylinderGeometry(0.013, 0.013, 0.08, 10);
+        engineGeo.rotateX(Math.PI / 2);
+        engineGeo.translate(x, -0.014, -0.02);
+        plane.add(new THREE.Mesh(engineGeo, darkMat));
+
+        const exhaustGeo = new THREE.CircleGeometry(0.011, 8);
+        exhaustGeo.translate(x, -0.014, -0.061);
+        plane.add(new THREE.Mesh(exhaustGeo, cyanGlowMat));
+      });
+
+      const lightGeo = new THREE.SphereGeometry(0.008, 8, 8);
+      const portLight = new THREE.Mesh(
+        lightGeo,
+        new THREE.MeshBasicMaterial({ color: 0xff3b30 })
+      );
+      portLight.position.set(-0.25, 0, -0.08);
+      plane.add(portLight);
+
+      const stbdLight = new THREE.Mesh(
+        lightGeo,
+        new THREE.MeshBasicMaterial({ color: 0x34c759 })
+      );
+      stbdLight.position.set(0.25, 0, -0.08);
+      plane.add(stbdLight);
+
+      plane.scale.set(0.95, 0.95, 0.95);
+      return plane;
+    }
+
+    const airplane = createAirplane();
+    globeGroup.add(airplane);
+
+    // Contrail Ribbon
+    const CONTRAIL_LENGTH = 35;
+    const contrailGeo = new THREE.BufferGeometry();
+    const contrailPositions = new Float32Array(CONTRAIL_LENGTH * 3);
+    contrailGeo.setAttribute(
+      "position",
+      new THREE.BufferAttribute(contrailPositions, 3)
+    );
+    const contrailMat = new THREE.LineBasicMaterial({
+      color: 0x64ffda,
+      transparent: true,
+      opacity: 0.6,
+    });
+    const contrailLine = new THREE.Line(contrailGeo, contrailMat);
+    globeGroup.add(contrailLine);
+    const contrailHistory = [];
+
+    // Flight Animation State
+    let flightProgress = 0.0;
+    let flightDirection = 1;
+    let pauseTimer = 0;
+    const FLIGHT_SPEED = 0.0016;
+
+    const Y_RATNAGIRI = -2.85;
+    const Y_LA = 0.49;
+
+    // Mouse Tracking Cursor on canvasfront
     const scenefront = new THREE.Scene();
     scenefront.background = null;
 
@@ -306,6 +630,9 @@ async function initThree() {
 
     let targetPosition = new THREE.Vector3();
     let currentPosition = new THREE.Vector3();
+    let mouseX = 0,
+      mouseY = 0;
+    let scrollParallaxY = 0;
 
     function onMouseMove(event) {
       targetPosition.set(
@@ -314,6 +641,8 @@ async function initThree() {
         0.5
       );
       targetPosition.unproject(camera);
+      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     }
 
     function onMouseDown() {
@@ -328,25 +657,108 @@ async function initThree() {
       mouseCircle.geometry = new THREE.RingGeometry(0.01, 0.012, 32);
     }
 
-    let mouseX = 0;
-    let mouseY = 0;
+    if (window.innerWidth >= 576) {
+      window.addEventListener("mousemove", onMouseMove, { passive: true });
+      window.addEventListener("mousedown", onMouseDown, { passive: true });
+      window.addEventListener("mouseup", onMouseUp, { passive: true });
+      document.addEventListener("mouseleave", () => {
+        mouseX = 0;
+        mouseY = 0;
+      });
+    }
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        scrollParallaxY = window.scrollY * 0.0003;
+      },
+      { passive: true }
+    );
+
+    // Main Render Loop
+    let clock = new THREE.Clock();
 
     function animate() {
       requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      const time = clock.getElapsedTime();
 
+      // Mouse cursor follower
       const difference = targetPosition.clone().sub(currentPosition);
       const acceleration = difference.multiplyScalar(0.05);
       currentPosition.add(acceleration);
       mouseCircle.position.copy(currentPosition);
 
-      mouseX != 0 && mouseY != 0
-        ? (planetMesh.rotation.x = mouseY)
-        : (planetMesh.rotation.x += 0.005);
-      mouseX != 0 && mouseY != 0
-        ? (planetMesh.rotation.y = mouseX)
-        : (planetMesh.rotation.y += 0.008);
-      mouseX = 0;
-      mouseY = 0;
+      // Radar ripples
+      const rippleScale = ((time * 1.6) % 2.5) + 1.0;
+      const rippleOpacity = Math.max(0, 1.0 - (rippleScale - 1.0) / 1.5);
+      markerRatnagiri.ring.scale.set(rippleScale, rippleScale, 1);
+      markerRatnagiri.ringMat.opacity = rippleOpacity;
+      markerLA.ring.scale.set(rippleScale, rippleScale, 1);
+      markerLA.ringMat.opacity = rippleOpacity;
+
+      // Flight progress
+      if (pauseTimer > 0) {
+        pauseTimer -= delta;
+        if (pauseTimer <= 0) {
+          flightDirection = -flightDirection;
+        }
+      } else {
+        flightProgress += FLIGHT_SPEED * flightDirection;
+        if (flightProgress >= 1.0) {
+          flightProgress = 1.0;
+          pauseTimer = 2.2;
+        } else if (flightProgress <= 0.0) {
+          flightProgress = 0.0;
+          pauseTimer = 2.2;
+        }
+      }
+
+      // Airplane positioning along Great Circle curve
+      const currentPos = flightCurve.getPointAt(flightProgress);
+      airplane.position.copy(currentPos);
+
+      const deltaT = 0.004 * (flightDirection >= 0 ? 1 : -1);
+      const nextT = Math.max(0, Math.min(1, flightProgress + deltaT));
+      const nextPos = flightCurve.getPointAt(nextT);
+      const tangent = nextPos.clone().sub(currentPos).normalize();
+
+      if (tangent.lengthSq() > 0.0001) {
+        const lookTarget = currentPos.clone().add(tangent);
+        const upVec = currentPos.clone().normalize();
+        const matrix = new THREE.Matrix4();
+        matrix.lookAt(currentPos, lookTarget, upVec);
+        airplane.quaternion.setFromRotationMatrix(matrix);
+
+        const bankAngle =
+          Math.sin(flightProgress * Math.PI) *
+          0.22 *
+          (flightDirection >= 0 ? 1 : -1);
+        airplane.rotateZ(bankAngle);
+      }
+
+      // Contrail update
+      if (pauseTimer <= 0) {
+        contrailHistory.unshift(currentPos.clone());
+        if (contrailHistory.length > CONTRAIL_LENGTH) contrailHistory.pop();
+        const posAttr = contrailGeo.attributes.position;
+        for (let i = 0; i < CONTRAIL_LENGTH; i++) {
+          const pt = contrailHistory[i] || currentPos;
+          posAttr.setXYZ(i, pt.x, pt.y, pt.z);
+        }
+        posAttr.needsUpdate = true;
+      }
+
+      // Globe camera tracking & mouse parallax
+      const targetAngleY =
+        Y_RATNAGIRI + flightProgress * (Y_LA - Y_RATNAGIRI);
+      const targetRotY = targetAngleY + mouseX * 0.15 + scrollParallaxY;
+      const targetRotX = 0.22 - mouseY * 0.12;
+
+      globeGroup.rotation.y +=
+        (targetRotY - globeGroup.rotation.y) * 0.04;
+      globeGroup.rotation.x +=
+        (targetRotX - globeGroup.rotation.x) * 0.05;
 
       rendererbg.render(scene, camera);
       rendererfront.render(scenefront, camera);
@@ -360,26 +772,12 @@ async function initThree() {
       rendererfront.setSize(width, height);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
+      updateGlobePlacement();
     }
     resizeRenderer();
     window.addEventListener("resize", resizeRenderer);
-
-    // Only attach cursor tracking on desktop
-    if (window.innerWidth >= 576) {
-      document.addEventListener("mousemove", (event) => {
-        mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-        mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-      });
-      document.addEventListener("mouseleave", () => {
-        mouseX = 0;
-        mouseY = 0;
-      });
-      window.addEventListener("mousemove", onMouseMove, false);
-      window.addEventListener("mousedown", onMouseDown, false);
-      window.addEventListener("mouseup", onMouseUp, false);
-    }
   } catch (err) {
-    console.warn("Three.js WebGL canvas initialization skipped or failed:", err);
+    console.warn("Three.js Earth Globe initialization failed:", err);
   }
 }
 
