@@ -1,5 +1,3 @@
-import * as THREE from "three";
-
 // --- Navigation Drawer Functions ---
 const openNav = () => {
   const popup = document.getElementById("divPopup");
@@ -138,19 +136,19 @@ function initUI() {
   setupScrollspy();
 }
 
+// Run immediately since script is at bottom of body, and listen to DOMContentLoaded as fallback
+initUI();
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initUI);
-} else {
-  initUI();
 }
 
 // --- Three.js Background & Interactive Animation ---
-function initThree() {
+async function initThree() {
   const canvasContainer = document.getElementById("canvas-container");
   if (!canvasContainer) return;
 
   try {
-    const scene = new THREE.Scene();
+    const THREE = await import("three");
     const camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
