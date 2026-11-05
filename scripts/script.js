@@ -1,3 +1,5 @@
+import { GLOBE_DOTS } from "./globe_dots.js";
+
 // --- Navigation Drawer Functions ---
 const openNav = () => {
   const popup = document.getElementById("divPopup");
@@ -231,6 +233,13 @@ if (document.readyState === "loading") {
 }
 
 // --- Three.js 3D Earth Globe & Flight Telemetry ---
+// Ensure legacy palette preference is cleared so the signature Navy & Cyan palette stays pure
+try {
+  localStorage.removeItem("portfolio_palette");
+} catch (e) {}
+
+const THEME_CYAN = 0x64ffda;
+
 async function initThree() {
   const canvasContainer = document.getElementById("canvas-container");
   if (!canvasContainer) return;
@@ -273,43 +282,121 @@ async function initThree() {
     // Group for the Earth globe system
     const globeGroup = new THREE.Group();
     function updateGlobePlacement() {
-      if (window.innerWidth >= 992) {
-        globeGroup.position.set(1.05, -0.1, 0);
-        globeGroup.scale.set(1.0, 1.0, 1.0);
+      if (window.innerWidth >= 1200) {
+        globeGroup.position.set(1.48, -0.05, 0);
+        globeGroup.scale.set(0.96, 0.96, 0.96);
+      } else if (window.innerWidth >= 992) {
+        globeGroup.position.set(1.30, -0.05, 0);
+        globeGroup.scale.set(0.88, 0.88, 0.88);
       } else {
-        globeGroup.position.set(0, -0.55, -0.4);
-        globeGroup.scale.set(0.82, 0.82, 0.82);
+        globeGroup.position.set(0, -0.90, -0.5);
+        globeGroup.scale.set(0.72, 0.72, 0.72);
       }
     }
     updateGlobePlacement();
     scene.add(globeGroup);
 
-    // Lights (Bright & Cheerful for Cartoon Aesthetic)
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+    // Deep Space Starfield Background
+    const starCount = 1400;
+    const starGeo = new THREE.BufferGeometry();
+    const starPositions = new Float32Array(starCount * 3);
+    const starColors = new Float32Array(starCount * 3);
+
+    const primaryColor = new THREE.Color(THEME_CYAN);
+    const whiteColor = new THREE.Color(0xffffff);
+    const paleBlueColor = new THREE.Color(0x93c5fd);
+
+    for (let i = 0; i < starCount; i++) {
+      starPositions[i * 3 + 0] = (Math.random() - 0.5) * 45;
+      starPositions[i * 3 + 1] = (Math.random() - 0.5) * 35;
+      starPositions[i * 3 + 2] = -5 - Math.random() * 25;
+
+      const rnd = Math.random();
+      let c;
+      if (rnd < 0.65) {
+        c = whiteColor;
+      } else if (rnd < 0.85) {
+        c = paleBlueColor;
+      } else {
+        c = primaryColor;
+      }
+      starColors[i * 3 + 0] = c.r;
+      starColors[i * 3 + 1] = c.g;
+      starColors[i * 3 + 2] = c.b;
+    }
+
+    starGeo.setAttribute("position", new THREE.BufferAttribute(starPositions, 3));
+    starGeo.setAttribute("color", new THREE.BufferAttribute(starColors, 3));
+
+    const starMat = new THREE.PointsMaterial({
+      size: 0.055,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+    });
+    const starField = new THREE.Points(starGeo, starMat);
+    scene.add(starField);
+
+    // Theme detection: Cyber (default, high contrast & aesthetic) vs Cartoon (?theme=cartoon)
+    const urlParams = new URLSearchParams(window.location.search);
+    const isCartoon = urlParams.get("theme") === "cartoon";
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(
+      isCartoon ? 0xffffff : 0x0a192f,
+      isCartoon ? 1.4 : 2.2
+    );
     scene.add(ambientLight);
 
     const sunLight = new THREE.DirectionalLight(0xffffff, 2.2);
     sunLight.position.set(8, 7, 10);
     scene.add(sunLight);
 
-    const fillLight = new THREE.DirectionalLight(0x64ffda, 1.2);
+    const fillLight = new THREE.DirectionalLight(THEME_CYAN, isCartoon ? 1.2 : 1.6);
     fillLight.position.set(-8, -4, -6);
     scene.add(fillLight);
 
-    // Cartoon Earth Sphere
+    // Base Ocean Sphere - Deep Matte Obsidian Navy
     const GLOBE_RADIUS = 2.0;
-    const textureLoader = new THREE.TextureLoader();
-    const cartoonTexture = textureLoader.load("./images/earth_cartoon.png");
-    cartoonTexture.colorSpace = THREE.SRGBColorSpace;
-
-    const earthGeometry = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64);
-    const earthMaterial = new THREE.MeshStandardMaterial({
-      map: cartoonTexture,
-      roughness: 0.55,
-      metalness: 0.05,
+    const oceanGeometry = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64);
+    const oceanMaterial = new THREE.MeshStandardMaterial({
+      color: 0x071324,
+      roughness: 0.85,
+      metalness: 0.15,
     });
-    const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-    globeGroup.add(earthMesh);
+    const oceanMesh = new THREE.Mesh(oceanGeometry, oceanMaterial);
+    globeGroup.add(oceanMesh);
+
+    // Mathematical Dot Matrix for Continents (GitHub-style Data Globe)
+    const scaledPositions = new Float32Array(GLOBE_DOTS.length);
+    const dotRadius = GLOBE_RADIUS * 1.002;
+    for (let i = 0; i < GLOBE_DOTS.length; i++) {
+      scaledPositions[i] = GLOBE_DOTS[i] * dotRadius;
+    }
+    const dotGeo = new THREE.BufferGeometry();
+    dotGeo.setAttribute("position", new THREE.BufferAttribute(scaledPositions, 3));
+
+    // Circular sprite texture for smooth, crisp circular dots
+    const dotCanvas = document.createElement("canvas");
+    dotCanvas.width = 32;
+    dotCanvas.height = 32;
+    const dctx = dotCanvas.getContext("2d");
+    dctx.beginPath();
+    dctx.arc(16, 16, 13, 0, Math.PI * 2);
+    dctx.fillStyle = "#ffffff";
+    dctx.fill();
+    const dotTexture = new THREE.CanvasTexture(dotCanvas);
+
+    const dotMat = new THREE.PointsMaterial({
+      size: 0.038,
+      map: dotTexture,
+      color: new THREE.Color(THEME_CYAN),
+      transparent: true,
+      alphaTest: 0.05,
+      opacity: 0.95,
+    });
+    const dotCloud = new THREE.Points(dotGeo, dotMat);
+    globeGroup.add(dotCloud);
 
     // Cyan Fresnel Atmosphere Glow
     const atmosphereVertexShader = `
@@ -322,16 +409,20 @@ async function initThree() {
       }
     `;
     const atmosphereFragmentShader = `
+      uniform vec3 uColor;
       varying vec3 vNormal;
       varying vec3 vPosition;
       void main() {
         vec3 viewDir = normalize(-vPosition);
         float intensity = pow(0.68 - dot(vNormal, viewDir), 2.2);
-        gl_FragColor = vec4(0.39, 1.0, 0.85, 1.0) * intensity * 0.75;
+        gl_FragColor = vec4(uColor, 1.0) * intensity * 0.75;
       }
     `;
     const atmosphereGeo = new THREE.SphereGeometry(GLOBE_RADIUS * 1.05, 64, 64);
     const atmosphereMat = new THREE.ShaderMaterial({
+      uniforms: {
+        uColor: { value: new THREE.Color(THEME_CYAN) },
+      },
       vertexShader: atmosphereVertexShader,
       fragmentShader: atmosphereFragmentShader,
       blending: THREE.AdditiveBlending,
@@ -425,7 +516,7 @@ async function initThree() {
       const rippleGeo = new THREE.RingGeometry(0.03, 0.065, 32);
       rippleGeo.rotateX(-Math.PI / 2);
       const rippleMat = new THREE.MeshBasicMaterial({
-        color: 0x64ffda,
+        color: THEME_CYAN,
         transparent: true,
         opacity: 0.9,
         side: THREE.DoubleSide,
@@ -459,7 +550,7 @@ async function initThree() {
         new THREE.SpriteMaterial({ map: texture, transparent: true })
       );
       sprite.scale.set(0.65, 0.18, 1);
-      sprite.position.set(0, 0.42, 0);
+      sprite.position.set(0.35, 0.45, 0); // Offset to side of runway so landing aircraft is fully visible
       group.add(sprite);
 
       globeGroup.add(group);
@@ -482,12 +573,13 @@ async function initThree() {
     // Realistic Glideslope & Flight Curve
     function getFlightAltitude(s) {
       const MAX_ALTITUDE = GLOBE_RADIUS * 0.38;
-      if (s < 0.02) return 0.005;
-      if (s > 0.98) return 0.005;
+      const MIN_ALTITUDE = 0.055; // Keep aircraft fuselage safely above surface at touchdown
+      if (s < 0.02) return MIN_ALTITUDE;
+      if (s > 0.98) return MIN_ALTITUDE;
 
       const normalizedS = (s - 0.02) / (0.98 - 0.02);
       const sineAlt = Math.sin(normalizedS * Math.PI);
-      return Math.pow(sineAlt, 0.85) * MAX_ALTITUDE;
+      return MIN_ALTITUDE + Math.pow(sineAlt, 0.85) * (MAX_ALTITUDE - MIN_ALTITUDE);
     }
 
     const flightPoints = [];
@@ -516,6 +608,130 @@ async function initThree() {
     flightPathLine.computeLineDistances();
     globeGroup.add(flightPathLine);
 
+    // Global Aviation & Data Network (Secondary Global Arcs)
+    const NETWORK_HUBS = {
+      mumbai: [19.076, 72.8777],
+      dubai: [25.2048, 55.2708],
+      london: [51.5074, -0.1278],
+      newyork: [40.7128, -74.006],
+      sanfrancisco: [37.7749, -122.4194],
+      tokyo: [35.6762, 139.6503],
+      singapore: [1.3521, 103.8198],
+      sydney: [-33.8688, 151.2093],
+    };
+
+    const NETWORK_ROUTES = [
+      ["mumbai", "dubai"],
+      ["dubai", "london"],
+      ["london", "newyork"],
+      ["newyork", "sanfrancisco"],
+      ["sanfrancisco", "tokyo"],
+      ["tokyo", "singapore"],
+      ["singapore", "mumbai"],
+      ["singapore", "sydney"],
+    ];
+
+    const networkArcMats = [];
+    const networkPulses = [];
+
+    NETWORK_ROUTES.forEach(([fromKey, toKey], index) => {
+      const p1 = latLonToVector3(NETWORK_HUBS[fromKey][0], NETWORK_HUBS[fromKey][1], GLOBE_RADIUS);
+      const p2 = latLonToVector3(NETWORK_HUBS[toKey][0], NETWORK_HUBS[toKey][1], GLOBE_RADIUS);
+
+      const pts = [];
+      const numPts = 50;
+      for (let i = 0; i <= numPts; i++) {
+        const t = i / numPts;
+        const pt = new THREE.Vector3().copy(p1).lerp(p2, t).normalize();
+        const arcAlt = Math.sin(t * Math.PI) * (GLOBE_RADIUS * 0.14);
+        pt.multiplyScalar(GLOBE_RADIUS + arcAlt);
+        pts.push(pt);
+      }
+      const curve = new THREE.CatmullRomCurve3(pts);
+      const curvePts = curve.getPoints(70);
+      const arcGeo = new THREE.BufferGeometry().setFromPoints(curvePts);
+      const arcMat = new THREE.LineDashedMaterial({
+        color: THEME_CYAN,
+        scale: 1,
+        dashSize: 0.08,
+        gapSize: 0.05,
+        transparent: true,
+        opacity: 0.35,
+      });
+      const arcLine = new THREE.Line(arcGeo, arcMat);
+      arcLine.computeLineDistances();
+      globeGroup.add(arcLine);
+      networkArcMats.push(arcMat);
+
+      // Light pulse particle traveling along each network arc
+      const pulseGeo = new THREE.SphereGeometry(0.016, 8, 8);
+      const pulseMat = new THREE.MeshBasicMaterial({
+        color: THEME_CYAN,
+        transparent: true,
+        opacity: 0.9,
+      });
+      const pulseMesh = new THREE.Mesh(pulseGeo, pulseMat);
+      globeGroup.add(pulseMesh);
+      networkArcMats.push(pulseMat);
+
+      networkPulses.push({
+        curve,
+        mesh: pulseMesh,
+        speed: 0.06 + (index % 4) * 0.025,
+        offset: index * 0.14,
+      });
+    });
+
+    // Aerospace Telemetry Orbital Ring
+    const orbitalRadius = GLOBE_RADIUS * 1.30;
+    const ringPts = [];
+    for (let i = 0; i <= 120; i++) {
+      const theta = (i / 120) * Math.PI * 2;
+      ringPts.push(
+        new THREE.Vector3(
+          orbitalRadius * Math.cos(theta),
+          0,
+          orbitalRadius * Math.sin(theta)
+        )
+      );
+    }
+    const ringGeo = new THREE.BufferGeometry().setFromPoints(ringPts);
+    const ringMat = new THREE.LineDashedMaterial({
+      color: THEME_CYAN,
+      dashSize: 0.15,
+      gapSize: 0.09,
+      transparent: true,
+      opacity: 0.35,
+    });
+    const orbitalRing = new THREE.Line(ringGeo, ringMat);
+    orbitalRing.computeLineDistances();
+    orbitalRing.rotation.x = Math.PI * 0.28;
+    orbitalRing.rotation.z = Math.PI * 0.15;
+    globeGroup.add(orbitalRing);
+
+    // Orbiting Micro-Satellite
+    const satelliteGroup = new THREE.Group();
+    const satBody = new THREE.Mesh(
+      new THREE.BoxGeometry(0.04, 0.03, 0.03),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.85, roughness: 0.15 })
+    );
+    satelliteGroup.add(satBody);
+
+    const panelMat = new THREE.MeshBasicMaterial({ color: 0x1d4ed8 });
+    const leftPanel = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.003, 0.026), panelMat);
+    leftPanel.position.set(-0.055, 0, 0);
+    satelliteGroup.add(leftPanel);
+    const rightPanel = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.003, 0.026), panelMat);
+    rightPanel.position.set(0.055, 0, 0);
+    satelliteGroup.add(rightPanel);
+
+    const satBeaconMat = new THREE.MeshBasicMaterial({ color: 0xff3b30 });
+    const satBeacon = new THREE.Mesh(new THREE.SphereGeometry(0.009, 8, 8), satBeaconMat);
+    satBeacon.position.set(0, 0.02, 0);
+    satelliteGroup.add(satBeacon);
+
+    orbitalRing.add(satelliteGroup);
+
     // Cute Chubby Cartoon Commercial Airliner
     function createCartoonAirplane() {
       const plane = new THREE.Group();
@@ -526,17 +742,20 @@ async function initThree() {
         metalness: 0.05,
       });
       const cyanMat = new THREE.MeshStandardMaterial({
-        color: 0x64ffda,
+        color: THEME_CYAN,
         roughness: 0.35,
         metalness: 0.1,
       });
+
       const darkGlassMat = new THREE.MeshStandardMaterial({
         color: 0x0f172a,
         roughness: 0.2,
         metalness: 0.8,
       });
       const engineIntakeMat = new THREE.MeshBasicMaterial({ color: 0x020617 });
-      const glowMat = new THREE.MeshBasicMaterial({ color: 0x64ffda });
+      const glowMat = new THREE.MeshBasicMaterial({
+        color: THEME_CYAN,
+      });
 
       // Fuselage: Chubby rounded body
       const bodyGeo = new THREE.CylinderGeometry(0.045, 0.045, 0.26, 16);
@@ -671,8 +890,8 @@ async function initThree() {
     const contrailHistory = [];
 
     // Flight Animation State (Graceful & Slower)
-    let flightProgress = 0.0;
-    let flightDirection = 1;
+    window.flightProgress = 0.0;
+    window.flightDirection = 1;
     let pauseTimer = 0;
     const FLIGHT_SPEED = 0.0008; // ~22 seconds per transit
 
@@ -731,10 +950,32 @@ async function initThree() {
       });
     }
 
+    // Motion Accessibility (WCAG 2.3.3)
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    // Scroll Fade-Out: Fades 3D globe as user scrolls past hero into About/Skills/Projects
+    function updateScrollFade() {
+      const scrollDist = window.scrollY;
+      const fadeThreshold = window.innerHeight * 0.75;
+      const fade = Math.max(0, 1.0 - scrollDist / fadeThreshold);
+      const baseMobileOpacity = 0.5;
+      const targetOpacity =
+        window.innerWidth < 992
+          ? (fade * baseMobileOpacity).toFixed(3)
+          : fade.toFixed(3);
+      if (canvasContainer) {
+        canvasContainer.style.opacity = targetOpacity;
+      }
+    }
+    updateScrollFade();
+
     window.addEventListener(
       "scroll",
       () => {
         scrollParallaxY = window.scrollY * 0.0003;
+        updateScrollFade();
       },
       { passive: true }
     );
@@ -743,9 +984,11 @@ async function initThree() {
     let clock = new THREE.Clock();
 
     function animate() {
-      requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      const time = clock.getElapsedTime();
+      if (!prefersReducedMotion) {
+        requestAnimationFrame(animate);
+      }
+      const delta = prefersReducedMotion ? 0 : clock.getDelta();
+      const time = prefersReducedMotion ? 0 : clock.getElapsedTime();
 
       // Mouse cursor follower
       const difference = targetPosition.clone().sub(currentPosition);
@@ -765,69 +1008,83 @@ async function initThree() {
       if (pauseTimer > 0) {
         pauseTimer -= delta;
         if (pauseTimer <= 0) {
-          flightDirection = -flightDirection;
+          window.flightDirection = -window.flightDirection;
         }
       } else {
-        flightProgress += FLIGHT_SPEED * flightDirection;
-        if (flightProgress >= 1.0) {
-          flightProgress = 1.0;
+        window.flightProgress += FLIGHT_SPEED * window.flightDirection;
+        if (window.flightProgress >= 1.0) {
+          window.flightProgress = 1.0;
           pauseTimer = 3.0; // 3-second gate layover
-        } else if (flightProgress <= 0.0) {
-          flightProgress = 0.0;
+        } else if (window.flightProgress <= 0.0) {
+          window.flightProgress = 0.0;
           pauseTimer = 3.0;
         }
       }
 
       // Airplane positioning along Great Circle curve
-      const s = flightProgress;
+      const s = Math.max(0.0001, Math.min(0.9999, window.flightProgress));
       const currentPos = flightCurve.getPointAt(s);
       airplane.position.copy(currentPos);
 
-      const deltaT = 0.003 * (flightDirection >= 0 ? 1 : -1);
-      const nextT = Math.max(0, Math.min(1, s + deltaT));
-      const nextPos = flightCurve.getPointAt(nextT);
-      const tangent = nextPos.clone().sub(currentPos).normalize();
+      // Tangent vector along curve (points from Ratnagiri to LA)
+      const curveTangent = flightCurve.getTangentAt(s).normalize();
 
-      if (tangent.lengthSq() > 0.0001) {
-        const lookTarget = currentPos.clone().add(tangent);
-        const upVec = currentPos.clone().normalize();
-        const matrix = new THREE.Matrix4();
-        matrix.lookAt(currentPos, lookTarget, upVec);
-        airplane.quaternion.setFromRotationMatrix(matrix);
+      // Heading direction:
+      // While at gate layover, in first 1.5s stay facing arrival; in last 1.5s rotate on tarmac to face departure
+      let effectiveDirection = window.flightDirection;
+      if (pauseTimer > 0 && pauseTimer <= 1.5) {
+        effectiveDirection = -window.flightDirection;
+      }
 
-        // Smooth Glideslope & Realistic Landing Flare:
-        // Takeoff: nose pitches up ~10 degrees
-        // Final approach: nose flares UP ~12 degrees into runway touchdown (prevents nose diving)
-        let flarePitch = 0;
-        if (flightDirection === 1) { // Flying to LA
-          if (s < 0.12) {
-            flarePitch = (1.0 - (s / 0.12)) * 0.18; // Nose up ~10 deg climb
-          } else if (s > 0.88 && s < 0.98) {
-            const flareFactor = Math.sin(((s - 0.88) / 0.10) * Math.PI);
-            flarePitch = flareFactor * 0.22; // Nose flared UP ~12 deg
-          }
-        } else { // Flying to Ratnagiri
-          if (s > 0.88) {
-            flarePitch = ((s - 0.88) / 0.12) * 0.18;
-          } else if (s < 0.12 && s > 0.02) {
-            const flareFactor = Math.sin(((0.12 - s) / 0.10) * Math.PI);
-            flarePitch = flareFactor * 0.22;
-          }
+      // If flying to LA (effectiveDirection >= 0), forward = curveTangent
+      // If flying to Ratnagiri (effectiveDirection < 0), forward = -curveTangent
+      const forward = (effectiveDirection >= 0 ? curveTangent : curveTangent.clone().negate()).normalize();
+      const surfaceNormal = currentPos.clone().normalize();
+
+      // Right-handed orthonormal frame:
+      // right wing (+X) = surfaceNormal x forward
+      const right = new THREE.Vector3().crossVectors(surfaceNormal, forward).normalize();
+      // roof / fin (+Y) = forward x right
+      const actualUp = new THREE.Vector3().crossVectors(forward, right).normalize();
+
+      const matrix = new THREE.Matrix4();
+      matrix.makeBasis(right, actualUp, forward);
+      airplane.quaternion.setFromRotationMatrix(matrix);
+
+      // Realistic Pitch (takeoff climb & landing flare):
+      // In aircraft local frame: negative rotateX tilts nose UP (+Y)
+      let flareAngle = 0;
+      if (effectiveDirection >= 0) { // Flying towards LA
+        if (s < 0.12) {
+          flareAngle = (1.0 - (s / 0.12)) * 0.18; // Nose UP ~10 deg climb
+        } else if (s > 0.88 && s < 0.99) {
+          const flareFactor = Math.sin(((s - 0.88) / 0.11) * Math.PI);
+          flareAngle = flareFactor * 0.22; // Nose flared UP ~12 deg
         }
-        airplane.rotateX(flarePitch);
+      } else { // Flying towards Ratnagiri
+        if (s > 0.88) {
+          flareAngle = ((s - 0.88) / 0.12) * 0.18; // Nose UP ~10 deg climb
+        } else if (s < 0.12 && s > 0.01) {
+          const flareFactor = Math.sin(((0.12 - s) / 0.11) * Math.PI);
+          flareAngle = flareFactor * 0.22; // Nose flared UP ~12 deg
+        }
+      }
+      if (flareAngle !== 0) {
+        airplane.rotateX(-flareAngle); // Negative X-rotation pitches nose UP
+      }
 
-        // Gentle banking into flight curve
-        const bankAngle =
-          Math.sin(s * Math.PI) *
-          0.16 *
-          (flightDirection >= 0 ? 1 : -1);
+      // Gentle banking into flight curve
+      if (pauseTimer <= 0) {
+        const bankAngle = Math.sin(s * Math.PI) * 0.14 * (effectiveDirection >= 0 ? 1 : -1);
         airplane.rotateZ(bankAngle);
       }
 
-      // Contrail smoke (only emitted when cruising above runway level)
+      // Contrail smoke (emitted from engine exhausts at aircraft tail)
       const currentAlt = getFlightAltitude(s);
-      if (pauseTimer <= 0 && currentAlt > 0.03) {
-        contrailHistory.unshift(currentPos.clone());
+      if (pauseTimer <= 0 && currentAlt > 0.08) {
+        // Tail is at local -Z (-0.16)
+        const tailPos = airplane.localToWorld(new THREE.Vector3(0, -0.015, -0.16));
+        contrailHistory.unshift(tailPos.clone());
         if (contrailHistory.length > CONTRAIL_LENGTH) contrailHistory.pop();
         const posAttr = contrailGeo.attributes.position;
         for (let i = 0; i < CONTRAIL_LENGTH; i++) {
@@ -835,6 +1092,8 @@ async function initThree() {
           posAttr.setXYZ(i, pt.x, pt.y, pt.z);
         }
         posAttr.needsUpdate = true;
+      } else {
+        contrailHistory.length = 0;
       }
 
       // Globe camera tracking & mouse parallax
@@ -847,6 +1106,33 @@ async function initThree() {
         (targetRotY - globeGroup.rotation.y) * 0.04;
       globeGroup.rotation.x +=
         (targetRotX - globeGroup.rotation.x) * 0.05;
+
+      // Starfield subtle mouse parallax
+      if (starField) {
+        starField.position.x = mouseX * 0.4;
+        starField.position.y = mouseY * 0.3;
+      }
+
+      // Orbiting micro-satellite
+      if (satelliteGroup) {
+        const satAngle = time * 0.35;
+        satelliteGroup.position.set(
+          orbitalRadius * Math.cos(satAngle),
+          0,
+          orbitalRadius * Math.sin(satAngle)
+        );
+        satelliteGroup.rotation.y = -satAngle + Math.PI / 2;
+        satBeaconMat.opacity = Math.sin(time * 6) > 0 ? 1.0 : 0.2;
+      }
+
+      // Animate light pulses along secondary global flight arcs
+      if (networkPulses) {
+        networkPulses.forEach((pulse) => {
+          const t = ((time * pulse.speed + pulse.offset) % 1.0);
+          const pos = pulse.curve.getPointAt(t);
+          pulse.mesh.position.copy(pos);
+        });
+      }
 
       rendererbg.render(scene, camera);
       rendererfront.render(scenefront, camera);

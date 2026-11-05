@@ -32,11 +32,12 @@
     </head>
 
     <body>
-        <div id="canvas-container"></div>
+        <div id="canvas-container" aria-hidden="true"></div>
         <div class="w-full">
             <div class="flex flex-nowrap">
-                <div
+                <nav
                     id="divPopup"
+                    aria-label="Main Navigation"
                     class="div-sidebar px-0 sm:px-2 w-full sm:w-2/12 md:w-2/12 lg:w-2/12 xl:w-1/12 bg-primary"
                 >
                     <div
@@ -47,7 +48,7 @@
                             <button
                                 id="btnClose"
                                 type="button"
-                                class="block sm:hidden p-3 rounded text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 cursor-pointer"
+                                class="block sm:hidden p-3 min-w-[44px] min-h-[44px] flex items-center justify-center rounded text-gray-300 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 cursor-pointer"
                                 aria-label="Close button"
                             >
                                 <span>
@@ -58,6 +59,7 @@
                         <!--Icon-->
                         <a
                             href="#"
+                            aria-label="Home"
                             class="li-nav flex-none items-center pb-3 md:mb-0 md:mr-auto text-white no-underline hover:scale-110 [&.current-section-link]:scale-110 transition duration-300 ease-in-out"
                         >
                             <span class="text-xl">
@@ -157,8 +159,8 @@
                             </ul>
                         </div>
                     </div>
-                </div>
-                <div
+                </nav>
+                <main
                     id="divMain"
                     class="w-full sm:w-10/12 md:w-10/12 lg:w-10/12 xl:w-11/12 sm:px-2 py-3"
                 >
@@ -192,7 +194,7 @@
                             </div>
                         </span>
                         <div class="flex">
-                            <span class="nikhil">
+                            <h1 class="nikhil">
                                 <span class="jiggle-letter">N</span
                                 ><span class="jiggle-letter">i</span
                                 ><span class="jiggle-letter">k</span
@@ -205,7 +207,7 @@
                                 ><span class="jiggle-letter">t</span
                                 ><span class="jiggle-letter">i</span
                                 ><span class="jiggle-letter">l</span>
-                            </span>
+                            </h1>
                         </div>
                     </section>
 
@@ -548,7 +550,7 @@
                 <div class="connector-line-right hidden md:block"></div>
                 <div class="flex items-center justify-between gap-2">
                   <span class="card-title font-bold text-white text-sm transition">WifiVision</span>
-                  <span class="text-xs text-slate-500 font-mono select-none min-h-[36px] inline-flex items-center p-1">private</span>
+                  <span class="text-xs text-slate-400 font-mono select-none min-h-[36px] inline-flex items-center p-1">private</span>
                 </div>
                 <p class="text-xs text-grey mt-1.5 leading-relaxed">
                   Real-time computer vision inference and object detection on Android using Google MLKit without AR frameworks.
@@ -769,7 +771,7 @@
                             </div>
                         </div>
                     </section>
-                </div>
+                </main>
             </div>
         </div>
 
