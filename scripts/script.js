@@ -294,6 +294,7 @@ async function initThree() {
       }
     }
     updateGlobePlacement();
+    globeGroup.rotation.set(0.10, -2.85, 0);
     scene.add(globeGroup);
 
     // Deep Space Starfield Background
@@ -570,10 +571,10 @@ async function initThree() {
       "34.05°N 118.24°W"
     );
 
-    // Realistic Glideslope & Flight Curve
+    // Realistic Glideslope & Flight Curve (Tight, sleek cruise altitude)
     function getFlightAltitude(s) {
-      const MAX_ALTITUDE = GLOBE_RADIUS * 0.38;
-      const MIN_ALTITUDE = 0.055; // Keep aircraft fuselage safely above surface at touchdown
+      const MAX_ALTITUDE = GLOBE_RADIUS * 0.16; // Sleek, majestic cruise altitude (~0.32 units)
+      const MIN_ALTITUDE = 0.062; // Keeps airplane belly safely above runway surface
       if (s < 0.02) return MIN_ALTITUDE;
       if (s > 0.98) return MIN_ALTITUDE;
 
@@ -865,7 +866,7 @@ async function initThree() {
       stbdLight.position.set(0.23, 0, -0.05);
       plane.add(stbdLight);
 
-      plane.scale.set(0.9, 0.9, 0.9);
+      plane.scale.set(1.12, 1.12, 1.12);
       return plane;
     }
 
@@ -1096,16 +1097,24 @@ async function initThree() {
         contrailHistory.length = 0;
       }
 
-      // Globe camera tracking & mouse parallax
-      const targetAngleY =
-        Y_RATNAGIRI + flightProgress * (Y_LA - Y_RATNAGIRI);
-      const targetRotY = targetAngleY + mouseX * 0.15 + scrollParallaxY;
-      const targetRotX = 0.22 - mouseY * 0.12;
+      // Dynamic Globe Camera Tracking: Keep airplane centered in focus
+      const norm = currentPos.clone().normalize();
+      const horizDist = Math.hypot(norm.x, norm.z);
+      // Bring airplane to the front-facing meridian (facing viewer +Z):
+      const rawTargetRotY = -Math.atan2(norm.x, norm.z);
+      // Bring airplane to ideal vertical eye level (pleasing 3D perspective):
+      const DESIRED_ELEVATION = 0.20; // ~11.5 degrees
+      const targetRotX = Math.atan2(norm.y, horizDist) - DESIRED_ELEVATION - mouseY * 0.12;
 
-      globeGroup.rotation.y +=
-        (targetRotY - globeGroup.rotation.y) * 0.04;
-      globeGroup.rotation.x +=
-        (targetRotX - globeGroup.rotation.x) * 0.05;
+      // Shortest circular difference for smooth continuous Y-rotation
+      let diffY =
+        ((rawTargetRotY + mouseX * 0.15 + scrollParallaxY) - globeGroup.rotation.y) %
+        (Math.PI * 2);
+      if (diffY > Math.PI) diffY -= Math.PI * 2;
+      if (diffY < -Math.PI) diffY += Math.PI * 2;
+
+      globeGroup.rotation.y += diffY * 0.05;
+      globeGroup.rotation.x += (targetRotX - globeGroup.rotation.x) * 0.05;
 
       // Starfield subtle mouse parallax
       if (starField) {
